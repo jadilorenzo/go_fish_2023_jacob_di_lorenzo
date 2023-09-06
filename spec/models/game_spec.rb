@@ -25,9 +25,9 @@ RSpec.describe Game, type: :model do
     it 'saves a GoFish game to JSON' do
       user1 = create(:user)
       user2 = create(:user)
-      player1 = Player.new(user1.id)
-      player2 = Player.new(user2.id)
-      go_fish = GoFish.new([player1, player2])
+      player1 = Player.new(user_id: user1.id)
+      player2 = Player.new(user_id: user2.id)
+      go_fish = GoFish.new(players: [player1, player2])
       go_fish.deal!
       game = create(:game, users: [ user1, user2 ])
 
@@ -42,10 +42,10 @@ RSpec.describe Game, type: :model do
       go_fish_json = {
         'players' => [{
           'user_id' => user1.id,
-          'cards' => [{ 'suit' => 'C', 'rank' => '4' }]
+          'hand' => [{ 'suit' => 'C', 'rank' => '4' }]
         },{
           'user_id' => user2.id,
-          'cards' => [{ 'suit' => 'H', 'rank' => 'J' }]
+          'hand' => [{ 'suit' => 'H', 'rank' => 'J' }]
         }],
         'deck' => {
           'cards' => [{ 'suit' => 'D', 'rank' => 'A' }]
@@ -54,7 +54,7 @@ RSpec.describe Game, type: :model do
       game = create(:game, go_fish: go_fish_json)
 
       expect(game.go_fish.players.map(&:user)).to match_array [ user1, user2 ]
-      expect(game.go_fish.players.first.cards.first).to eq Card.new(suit: 'C', rank: '4')
+      expect(game.go_fish.players.first.hand.first).to eq Card.new(suit: 'C', rank: '4')
       expect(game.go_fish.deck.cards.first).to eq Card.new(suit: 'D', rank: 'A')
     end
   end

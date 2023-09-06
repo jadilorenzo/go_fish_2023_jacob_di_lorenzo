@@ -16,6 +16,15 @@ class Game < ApplicationRecord
     update(go_fish: go_fish, started_at: Time.zone.now)
   end
 
+  def your_turn
+    # game.current_user == user
+    true
+  end
+
+  def pending?
+    started_at.nil?
+  end
+
   def play_round!
     go_fish.play_round!
     save!

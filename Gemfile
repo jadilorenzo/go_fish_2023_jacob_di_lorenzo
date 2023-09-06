@@ -71,3 +71,5 @@ group :test do
   gem "selenium-webdriver"
   gem "test-prof"
 end
+
+gem "pry", "~> 0.14.2"

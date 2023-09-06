@@ -1,32 +1,64 @@
 class Player
-  attr_reader :cards
+  class TakeReceivedCardsAndCard < StandardError; end
+  class TakeReceivedNothing < StandardError; end
+  class InvalidRank < StandardError; end
 
-  def initialize(user_id, cards=[])
+  attr_reader :name, :hand, :books
+
+  def initialize(user_id: -1, name: user.nil? ? 'Anonymous' : user.first_name, hand: [])
     @user_id = user_id
-    @cards = cards
+    @name = name
+    @hand = hand
+    @books = []
   end
 
   def user
-    @user ||= User.find user_id
+    @user ||= User.find user_id if !user_id.nil? && user_id.positive?
   end
 
   def take(*new_cards)
-    cards.push(*new_cards)
+    new_hand = @hand.push(*new_cards)
+    check_for_books
+    new_hand
   end
 
   def self.from_json(json)
-    cards = json['cards'].map { |card_hash| Card.new(**card_hash.symbolize_keys) }
-    self.new(json['user_id'], cards)
+    hand = json['hand'].map { |card_hash| Card.new(**card_hash.symbolize_keys) }
+    self.new(user_id: json['user_id'], hand: hand)
   end
 
   def as_json
     {
       user_id: user_id,
-      cards: cards.map(&:as_json)
+      hand: hand.map(&:as_json)
     }
   end
 
+  def give_cards_of_rank(rank)
+    raise InvalidRank unless Card.valid_rank?(rank)
+
+    matching_cards = cards_of_rank rank
+    @hand -= matching_cards
+    matching_cards
+  end
+
+  def rank_in_hand?(rank)
+    hand.any? { |card| card.rank == rank }
+  end
+
   private
+
+  def cards_of_rank(rank)
+    hand.filter { |card| card.rank == rank }
+  end
+
+  def check_for_books
+    ranks_in_hand = hand.map(&:rank)
+    book_ranks = ranks_in_hand.select { |rank| ranks_in_hand.count(rank) == 4 }.uniq
+    @books += book_ranks.map { |rank| hand.filter { |card| card.rank == rank } }
+    @hand = @hand.reject { |card| book_ranks.include?(card.rank) }
+    @books
+  end
 
   attr_reader :user_id
 end
