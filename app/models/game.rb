@@ -12,17 +12,37 @@ class Game < ApplicationRecord
 
   def start!
     # TODO fill in with your logic to start game
-    go_fish = GoFish.new
-    update(go_fish: go_fish, started_at: Time.zone.now)
+
+    if ready_to_start?
+      players = users.map { |user| Player.new(user_id: user.id) }
+      go_fish = GoFish.new players: players
+      update(go_fish: go_fish, started_at: Time.zone.now)
+    end
   end
 
-  def your_turn
-    # game.current_user == user
-    true
+  def started?
+    !go_fish.nil?
   end
 
   def pending?
-    started_at.nil?
+    !ready_to_start?
+  end
+
+  def ready_to_start?
+    player_count == users.length
+  end
+
+  def current_player
+    go_fish.current_player.user
+  end
+
+  def current_players_turn?(current_user)
+    current_player_user = current_player
+    current_user == current_player_user
+  end
+
+  def remaining_players
+    player_count - users.length
   end
 
   def play_round!
@@ -30,4 +50,3 @@ class Game < ApplicationRecord
     save!
   end
 end
-

@@ -3,7 +3,7 @@ class Player
   class TakeReceivedNothing < StandardError; end
   class InvalidRank < StandardError; end
 
-  attr_reader :name, :hand, :books
+  attr_reader :name, :hand, :books, :user_id
 
   def initialize(user_id: -1, name: user.nil? ? 'Anonymous' : user.first_name, hand: [])
     @user_id = user_id
@@ -13,7 +13,8 @@ class Player
   end
 
   def user
-    @user ||= User.find user_id if !user_id.nil? && user_id.positive?
+    return if user_id.nil?
+    @user ||= User.find user_id
   end
 
   def take(*new_cards)

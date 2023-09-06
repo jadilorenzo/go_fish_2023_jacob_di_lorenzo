@@ -46,11 +46,7 @@ class GoFish
   end
 
   def play_round!
-    if current_player_index == players.length - 1
-      self.current_player_index = 0
-    else
-      self.current_player_index = current_player_index + 1
-    end
+    @turn += 1
   end
 
   def go_fish
@@ -77,7 +73,6 @@ class GoFish
     players = json['players'].map do |player_hash|
       Player.from_json(player_hash)
     end
-    binding.pry unless json['deck']['cards']
     deck = Deck.new(cards: json['deck']['cards'].map do |card_hash|
       Card.new(**card_hash.symbolize_keys)
     end)
