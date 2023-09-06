@@ -1,0 +1,14 @@
+nav.sidebar.sidebar--drawer.sidebar--padded
+  = link_to root_path, class: 'sidebar__brand' do
+    = image_tag "https://rolemodelsoftware.com/assets/rolemodel-logo--blue-5b7cee4303f5b115050586117bad8960640884812d1d51ee4b58817598c896da.svg"
+
+  .sidebar__content.sidebar__content--start
+    = link_to root_path, class: 'btn' do
+      = material_icon('playing_cards')
+      | Games
+
+  - if user_signed_in?
+    .sidebar__content.sidebar__content--end
+      = button_to destroy_session_path(current_user), method: :delete, class: 'btn btn--no-border full-width' do
+        = material_icon('logout')
+        | Sign Out

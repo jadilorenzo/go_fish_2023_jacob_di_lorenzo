@@ -1,0 +1,8 @@
+= content_for :modal_title do
+  h1 Create Game
+
+= simple_form_for(@game, html: { id: 'new-game-form' }) do |f|
+  = f.input :player_count, label: 'Player Count'
+
+= content_for :modal_actions do
+  button.btn-primary type='submit' form='new-game-form' Create

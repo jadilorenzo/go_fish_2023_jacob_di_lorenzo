@@ -1,0 +1,12 @@
+.flex.flex-col.items-center
+  = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'card' }) do |f|
+    .card__header
+      h2= t(".forgot_your_password", default: "Forgot your password?")
+    .card__body
+      = f.input :email, required: true, autofocus: true, autocomplete: "email"
+    .card__footer
+      .flex.justify-end
+        = f.submit t(".send_me_reset_password_instructions", default: "Send me reset password instructions"), class: 'btn-primary'
+
+  .flex.gap-sm.margin-top-sm
+    = render "devise/shared/links"

@@ -1,0 +1,13 @@
+.modal-wrapper#confirm
+  .modal-wrapper__backdrop.confirm-cancel
+  .modal
+    .modal__header#confirm-title
+      h3 Are you sure?
+
+    .modal__body#confirm-body
+      p This action cannot be undone.
+
+    .modal__footer
+      .flex.justify-center.items-center.gap-sm
+        button.btn.confirm-cancel type='button' Cancel
+        button.btn-delete#confirm-accept type='button' Yes, I'm Sure

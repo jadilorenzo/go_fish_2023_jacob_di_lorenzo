@@ -1,0 +1,7 @@
+turbo-frame id="flash"
+  - flash.each do |type, msg|
+    div class="alert-#{type} alert--outlined alert--flash"
+      = material_icon(icon_name_for_flash(type), classes: 'icon--large')
+      .alert__messages
+        .alert__title = type.humanize
+        .alert__description = msg

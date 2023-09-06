@@ -1,0 +1,4 @@
+// seems like this should not be necessary, but without it, the confirm dialog is breifly visible on page load
+.modal-wrapper#confirm:not(.modal-wrapper--active) {
+  opacity: 0;
+}

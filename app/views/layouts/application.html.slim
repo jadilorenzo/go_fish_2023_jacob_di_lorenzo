@@ -1,0 +1,20 @@
+doctype html
+html data-theme-mode='light'
+  head
+    title Example 2023
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true
+    meta content="width=device-width, initial-scale=1" name="viewport"
+  body class=('app-with-sidebar' if user_signed_in?)
+    - if user_signed_in?
+      = render 'shared/sidebar'
+
+    .app-body
+      .app__content
+        = render 'shared/flash'
+        = turbo_frame_tag 'modal'
+        = render 'shared/confirm'
+        .margin-top-md
+          = yield
