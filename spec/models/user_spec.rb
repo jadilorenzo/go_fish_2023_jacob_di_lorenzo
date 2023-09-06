@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
@@ -11,22 +13,22 @@ RSpec.describe User, type: :model do
       new_user = build(:user, email: 'test@example.com')
 
       expect(new_user).not_to be_valid
-      expect {
+      expect do
         new_user.save!
-      }.to raise_error ActiveRecord::RecordInvalid
+      end.to raise_error ActiveRecord::RecordInvalid
     end
   end
 
   xdescribe 'user record' do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
-    let!(:lost_game) { create(:game, users: [ user1, user2 ], winner: user2) }
-    let!(:won_game1) { create(:game, users: [ user1, user2 ], winner: user1) }
-    let!(:won_game2) { create(:game, users: [ user1, user2 ], winner: user1) }
+    let!(:lost_game) { create(:game, users: [user1, user2], winner: user2) }
+    let!(:won_game1) { create(:game, users: [user1, user2], winner: user1) }
+    let!(:won_game2) { create(:game, users: [user1, user2], winner: user1) }
 
     it 'returns the games a user has won' do
-      expect(user1.won_games).to eq [ won_game1, won_game2 ]
-      expect(user2.won_games).to eq [ lost_game ]
+      expect(user1.won_games).to eq [won_game1, won_game2]
+      expect(user2.won_games).to eq [lost_game]
     end
 
     it 'handle a user that has no games' do

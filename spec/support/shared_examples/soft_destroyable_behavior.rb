@@ -61,7 +61,9 @@ RSpec.shared_examples 'a soft destroyable' do |factory_name, **options|
         # when
         destroyable.soft_destroy!
         # then
-        dependent_deleted_timestamps = dependent_objects.map { |dependent_object| dependent_object.reload.deleted_at }.compact.uniq
+        dependent_deleted_timestamps = dependent_objects.map do |dependent_object|
+          dependent_object.reload.deleted_at
+        end.compact.uniq
         expect(dependent_deleted_timestamps).not_to be_empty
       end
       it 'uses the parent deleted_at timestamp for children' do
@@ -73,7 +75,9 @@ RSpec.shared_examples 'a soft destroyable' do |factory_name, **options|
         # when
         destroyable.soft_destroy!
         # then
-        dependent_deleted_timestamps = dependent_objects.map { |dependent_object| dependent_object.reload.deleted_at }.compact.uniq
+        dependent_deleted_timestamps = dependent_objects.map do |dependent_object|
+          dependent_object.reload.deleted_at
+        end.compact.uniq
         expect(dependent_deleted_timestamps.size).to eq(1)
         expect(dependent_deleted_timestamps.first).to eq(destroyable.reload.deleted_at)
       end

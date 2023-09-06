@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 class GoFish
   DEAL_SIZE = {
     2 => 7,
     3 => 5,
     4 => 5,
-    5 => 5,
-  }
+    5 => 5
+  }.freeze
 
   attr_reader :players, :deck, :cards_in_play, :winner, :turn, :dealt
+
   class TooManyPlayers < StandardError; end
   class InvalidRank < StandardError; end
   class PlayerDoesNotHaveRequestedRank < StandardError; end
@@ -25,10 +28,6 @@ class GoFish
 
   def dealt?
     dealt
-  end
-
-  def current_player
-    players[current_player_index]
   end
 
   def start
@@ -76,12 +75,13 @@ class GoFish
     deck = Deck.new(cards: json['deck']['cards'].map do |card_hash|
       Card.new(**card_hash.symbolize_keys)
     end)
-    self.new(players: players, deck: deck, turn: json['turn'])
+    new(players: players, deck: deck, turn: json['turn'])
   end
 
   def self.load(json)
     return nil if json.blank?
-    self.from_json(json)
+
+    from_json(json)
   end
 
   def self.dump(obj)
@@ -109,6 +109,6 @@ class GoFish
   def give_cards_to_player(cards)
     player = current_player
     @turn += 1
-    player.take *cards
+    player.take(*cards)
   end
 end

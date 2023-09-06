@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Card
   class InvalidRankOrSuitError < StandardError; end
   SUITS = %w[H D C S].freeze
@@ -9,7 +11,8 @@ class Card
 
   def initialize(suit:, rank:)
     validate(rank, suit)
-    @suit, @rank = suit, rank
+    @suit = suit
+    @rank = rank
   end
 
   def validate(rank, suit)
@@ -20,7 +23,8 @@ class Card
 
   def value
     return RANKS.index(rank) + 2 unless rank == 'A'
-    return 15
+
+    15
   end
 
   def ==(other)

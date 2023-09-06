@@ -1,6 +1,5 @@
 require:
-  - rubocop-rails
-  - ./lib/cops/form_error_response.rb
+  # - rubocop-rails
 
 AllCops:
   Exclude:

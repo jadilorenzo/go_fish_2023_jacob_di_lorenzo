@@ -1,5 +1,6 @@
-class Game < ApplicationRecord
+# frozen_string_literal: true
 
+class Game < ApplicationRecord
   has_many :game_users
   has_many :users, through: :game_users
 
@@ -11,13 +12,13 @@ class Game < ApplicationRecord
   serialize :go_fish, GoFish
 
   def start!
-    # TODO fill in with your logic to start game
+    # TODO: fill in with your logic to start game
 
-    if ready_to_start?
-      players = users.map { |user| Player.new(user_id: user.id) }
-      go_fish = GoFish.new players: players
-      update(go_fish: go_fish, started_at: Time.zone.now)
-    end
+    return unless ready_to_start?
+
+    players = users.map { |user| Player.new(user_id: user.id) }
+    go_fish = GoFish.new players: players
+    update(go_fish: go_fish, started_at: Time.zone.now)
   end
 
   def started?

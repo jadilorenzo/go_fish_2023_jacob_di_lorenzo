@@ -10,22 +10,25 @@ module IconHelper
     when 'alert'
       'cancel'
     else
-        type
+      type
     end
   end
 
-  def material_icon(name, filled: false, size: 'medium', weight: 'normal', emphasis: 'normal', color: nil, classes: nil, hover_text: name)
+  def material_icon(name, filled: false, size: 'medium', weight: 'normal', emphasis: 'normal', color: nil,
+                    classes: nil, hover_text: name)
     options = {
       class: classes(false, filled, size, weight, emphasis, classes),
       title: hover_text
     }
 
-    options[:style] = "color: var(--op-color-#{color}-base);" if color # primary, neutral, alerts-danger, alerts-warning, alerts-notice, alerts-notice
+    # primary, neutral, alerts-danger, alerts-warning, alerts-notice, alerts-notice
+    options[:style] = "color: var(--op-color-#{color}-base);" if color
 
     tag.span(name, **options)
   end
 
-  def icon(name, filled: false, size: 'medium', weight: 'normal', emphasis: 'normal', color: nil, classes: nil, hover_text: name)
+  def icon(name, filled: false, size: 'medium', weight: 'normal', emphasis: 'normal', color: nil, classes: nil,
+           hover_text: name)
     using_custom_icon = custom_icon_path(name).present?
 
     contents = using_custom_icon ? embedded_svg("icons/#{name}.svg") : name

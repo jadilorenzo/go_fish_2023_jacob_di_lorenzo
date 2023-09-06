@@ -1,6 +1,12 @@
+# frozen_string_literal: true
+
 class GamesController < ApplicationController
   def index
     @pending_games = Game.pending
+  end
+
+  def show
+    @game = Game.find params[:id]
   end
 
   def new
@@ -12,8 +18,9 @@ class GamesController < ApplicationController
   def create
     @game = Game.new(game_params)
     @game.users << current_user # creates a GameUser record
+
     if @game.save
-      redirect_to @game, notice: 'Game created successfully'
+      redirect_to @game, notice: I18n.t('flash.game_created_successfully')
     else
       render :new, layout: 'modal', status: :unprocessable_entity
     end
@@ -23,10 +30,6 @@ class GamesController < ApplicationController
     game = Game.find params[:id]
     game.play_round!
     redirect_to game
-  end
-
-  def show
-    @game = Game.find params[:id]
   end
 
   private

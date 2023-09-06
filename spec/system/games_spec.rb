@@ -1,4 +1,6 @@
-require "rails_helper"
+# frozen_string_literal: true
+
+require 'rails_helper'
 
 RSpec.describe 'Games', type: :system, js: true do
   it 'requires authentication' do
@@ -10,7 +12,7 @@ RSpec.describe 'Games', type: :system, js: true do
 
   it 'starts a game when enough players join' do
     player1 = create(:user)
-    game = create(:game, users: [ player1 ], player_count: 2)
+    game = create(:game, users: [player1], player_count: 2)
     user = create(:user, first_name: 'Caleb')
     sign_in user
     visit root_path
@@ -26,7 +28,7 @@ RSpec.describe 'Games', type: :system, js: true do
     session1 = Capybara::Session.new(:rack_test, Rails.application)
     session2 = Capybara::Session.new(:rack_test, Rails.application)
 
-    [ session1, session2 ].each_with_index do |session, index|
+    [session1, session2].each_with_index do |session, index|
       user = create(:user, first_name: "Player #{index + 1}")
       session.visit root_path
       # can't use devise helper with multiple sessions
@@ -34,12 +36,12 @@ RSpec.describe 'Games', type: :system, js: true do
       session.click_on 'Join'
     end
     session1.driver.refresh
-    expect(session1).to have_content "Its your turn"
+    expect(session1).to have_content 'Its your turn'
     session1.click_on 'Play'
     session2.driver.refresh
     session2.click_on 'Play'
     session1.driver.refresh
-    expect(session1).to have_content "Its your turn"
+    expect(session1).to have_content 'Its your turn'
     expect(session2).to have_content "Its Player 1 User's turn"
   end
 

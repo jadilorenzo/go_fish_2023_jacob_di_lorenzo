@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Player
   class TakeReceivedCardsAndCard < StandardError; end
   class TakeReceivedNothing < StandardError; end
@@ -14,6 +16,7 @@ class Player
 
   def user
     return if user_id.nil?
+
     @user ||= User.find user_id
   end
 
@@ -25,7 +28,7 @@ class Player
 
   def self.from_json(json)
     hand = json['hand'].map { |card_hash| Card.new(**card_hash.symbolize_keys) }
-    self.new(user_id: json['user_id'], hand: hand)
+    new(user_id: json['user_id'], hand: hand)
   end
 
   def as_json
@@ -60,6 +63,4 @@ class Player
     @hand = @hand.reject { |card| book_ranks.include?(card.rank) }
     @books
   end
-
-  attr_reader :user_id
 end

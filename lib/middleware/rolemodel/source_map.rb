@@ -4,7 +4,7 @@ module Rolemodel
   class SourceMap
     def initialize(app, **options)
       root = options.delete(:root) || 'maps'
-      default_headers = {'Set-Cookie' => 'Same-Site=None', 'Cache-Control' => 'max-age=0;no-cache'}
+      default_headers = { 'Set-Cookie' => 'Same-Site=None', 'Cache-Control' => 'max-age=0;no-cache' }
       custom_headers = default_headers.merge(options.delete(:headers) || {})
       @app = app
       @allowed_users_emails = ENV['SOURCE_MAPS_ALLOWED_USERS_EMAILS'] || nil
@@ -12,7 +12,7 @@ module Rolemodel
     end
 
     def call(env)
-      serve?(env) ? @file_server.call(env.tap { |env| env['PATH_INFO'].sub!(/^\/[\w-]+[^\/]/, '') }) : @app.call(env)
+      serve?(env) ? @file_server.call(env.tap { |env| env['PATH_INFO'].sub!(%r{^/[\w-]+[^/]}, '') }) : @app.call(env)
     end
 
     private

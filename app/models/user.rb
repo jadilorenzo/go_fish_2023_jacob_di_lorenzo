@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -18,6 +20,7 @@ class User < ApplicationRecord
 
   def winning_percentage
     return 0 unless games.any?
+
     won_games.count / games.count.to_f
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Deck
   DECK_SIZE = Card::SUITS.length * Card::RANKS.length
 
@@ -35,7 +37,7 @@ class Deck
 
   def self.from_json(json)
     cards = json['cards'].map { |card_hash| Card.new(**card_hash.symbolize_keys) }
-    self.new(cards: cards)
+    new(cards: cards)
   end
 
   def as_json

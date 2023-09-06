@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module TurboFrameLinkHelper
-  def panel_link_to(name, url, options={}, &block)
+  def panel_link_to(name, url, options = {}, &block)
     frame_link_helper('panel', name, url, options, &block)
   end
 
-  def modal_link_to(name, url, options={}, &block)
+  def modal_link_to(name, url, options = {}, &block)
     frame_link_helper('modal', name, url, options, &block)
   end
 

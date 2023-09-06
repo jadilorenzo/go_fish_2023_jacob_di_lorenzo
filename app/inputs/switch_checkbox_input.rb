@@ -23,7 +23,7 @@ class SwitchCheckboxInput < SimpleForm::Inputs::BooleanInput
       else
         build_check_box_without_hidden_field(merged_input_options)
       end +
-      label(wrapper_options)
+        label(wrapper_options)
     end
 
     if options[:label_after_input]

@@ -12,9 +12,9 @@ module SoftDestroyable
 
   module ClassMethods
     def default_scope(scope = nil)
-      unless scope.nil? && !block_given?
-        raise "Default scopes should not be used with soft destroyable - in class #{name}"
-      end
+      return if scope.nil? && !block_given?
+
+      raise "Default scopes should not be used with soft destroyable - in class #{name}"
     end
 
     def soft_destroy(timestamp = Time.zone.now)
