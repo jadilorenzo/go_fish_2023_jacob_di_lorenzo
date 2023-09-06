@@ -23,6 +23,36 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(game.reload.users).to include user
   end
 
+  def sign_in_user(name)
+    user = create(:user, first_name: name)
+    sign_in user
+    user
+  end
+
+  def sign_in_and_join_game(name)
+    user = sign_in_user(name)
+    visit root_path
+    click_on 'Join'
+    user
+  end
+
+  def create_game(number_of_players)
+    visit root_path
+
+    click_on 'Create Game'
+    fill_in 'game[player_count]', with: number_of_players
+    click_button 'Create'
+  end
+
+  it 'starts a game when 3 players join' do
+    user1 = sign_in_user('Caleb')
+    create_game(3)
+
+    expect(page).to have_content 'Waiting for 2 players to join'
+    user2 = sign_in_and_join_game('Jacob')
+    expect(page).to have_content 'Waiting for 1 player to join'
+  end
+
   it 'save game state' do
     game = create(:game, player_count: 2)
     session1 = Capybara::Session.new(:rack_test, Rails.application)
