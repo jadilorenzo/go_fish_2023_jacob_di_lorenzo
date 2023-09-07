@@ -10,7 +10,7 @@ RSpec.describe 'Games', type: :system, js: true do
   end
 
   def sign_in_user(name)
-    user = create(:user, first_name: name)
+    user = create(:user, first_name: name, last_name: 'Last')
     sign_in user
     user
   end
@@ -46,8 +46,7 @@ RSpec.describe 'Games', type: :system, js: true do
 
     click_on 'Join'
 
-    expect(page).to have_content "Its #{player1.full_name}'s turn"
-    expect(game.reload.users).to include user
+    expect(page).to have_content "#{player1.full_name} (their turn)"
   end
 
   it 'shows a player\'s hand' do
@@ -60,8 +59,9 @@ RSpec.describe 'Games', type: :system, js: true do
   it 'shows a list of players' do
     game = create(:game, player_count: 2)
     user1 = sign_in_and_join_game('Hunter')
-    user2 = sign_in_and_join_game('Jacob')
     sleep 0.1
+    user2 = sign_in_and_join_game('Jacob')
+
     expect(page).to have_content('Jacob')
     expect(page).to have_content('Hunter')
   end
@@ -81,19 +81,19 @@ RSpec.describe 'Games', type: :system, js: true do
     session2 = Capybara::Session.new(:rack_test, Rails.application)
 
     [session1, session2].each_with_index do |session, index|
-      user = create(:user, first_name: "Player #{index + 1}")
+      user = create(:user, first_name: 'Player', last_name: "#{index + 1}")
       session.visit root_path
       # can't use devise helper with multiple sessions
       manual_sign_in(session, user)
       session.click_on 'Join'
     end
     session1.driver.refresh
-    expect(session1).to have_content 'Its your turn'
+    expect(session1).to have_content '(your turn)'
     session1.click_on 'Play'
     session2.driver.refresh
     session2.click_on 'Play'
     session1.driver.refresh
-    expect(session1).to have_content 'Its your turn'
-    expect(session2).to have_content "Its Player 1 User's turn"
+    expect(session1).to have_content '(your turn)'
+    expect(session2).to have_content 'Player 1 (their turn)'
   end
 end

@@ -33,13 +33,16 @@ class Game < ApplicationRecord
   end
 
   def current_player
-    go_fish.current_player.user
+    go_fish.current_player
+  end
+
+  def current_player_user
+    current_player.user
   end
 
   def current_players_turn?(current_user)
     return false unless started?
 
-    current_player_user = current_player
     current_user == current_player_user
   end
 

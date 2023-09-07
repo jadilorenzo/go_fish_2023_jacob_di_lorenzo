@@ -2,12 +2,10 @@
   .three-fifths-width
     .card-padded
       h2 Players
-      = render 'players', players: game.go_fish.players
+      = render 'players', players: game.go_fish.players, current_player: game.current_player, current_user: current_user
       - if game.current_players_turn?(current_user)
         p Its your turn
         = button_to 'Play', play_round_game_path(game), method: :patch, class: 'btn-primary'
-      - else
-        p = "Its #{game.current_player.full_name}'s turn"
   .two-fifths-width
     .card-padded
       h2 Game Results

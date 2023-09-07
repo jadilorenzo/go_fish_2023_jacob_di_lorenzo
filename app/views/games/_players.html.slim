@@ -2,3 +2,4 @@
   - players.each do |player|
     .card-padded
       = player.name
+      = " (#{current_user.id == player.user_id ? 'your' : 'their'} turn)" if current_player == player
