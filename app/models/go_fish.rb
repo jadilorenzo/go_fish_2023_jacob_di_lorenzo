@@ -30,7 +30,7 @@ class GoFish
     dealt
   end
 
-  def start
+  def start!
     deck.shuffle!
     deal!
   end

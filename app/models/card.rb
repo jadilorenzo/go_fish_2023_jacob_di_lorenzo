@@ -35,6 +35,10 @@ class Card
     "#{RANK_NAMES[RANKS.index(rank)]} of #{SUIT_NAMES[SUITS.index(suit)]}"
   end
 
+  def img_href
+    "/assets/images/cards/#{RANK_NAMES[RANKS.index(rank)]}_of_#{SUIT_NAMES[SUITS.index(suit)]}.svg".downcase
+  end
+
   def as_json
     {
       suit: suit,

@@ -3,24 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Games', type: :system, js: true do
-  it 'requires authentication' do
-    visit '/games'
-
-    expect(page).to have_content 'Welcome'
-    expect(current_path).to eq new_user_session_path
-  end
-
-  it 'starts a game when enough players join' do
-    player1 = create(:user)
-    game = create(:game, users: [player1], player_count: 2)
-    user = create(:user, first_name: 'Caleb')
-    sign_in user
-    visit root_path
-
-    click_on 'Join'
-
-    expect(page).to have_content "Its #{player1.full_name}'s turn"
-    expect(game.reload.users).to include user
+  def manual_sign_in(session, user)
+    session.fill_in 'Email', with: user.email
+    session.fill_in 'Password', with: user.password
+    session.click_on 'Log in'
   end
 
   def sign_in_user(name)
@@ -44,6 +30,36 @@ RSpec.describe 'Games', type: :system, js: true do
     click_button 'Create'
   end
 
+  it 'requires authentication' do
+    visit '/games'
+
+    expect(page).to have_content 'Welcome'
+    expect(current_path).to eq new_user_session_path
+  end
+
+  it 'starts a game when enough players join' do
+    player1 = create(:user)
+    game = create(:game, users: [player1], player_count: 2)
+    user = create(:user, first_name: 'Caleb')
+    sign_in user
+    visit root_path
+
+    click_on 'Join'
+
+    expect(page).to have_content "Its #{player1.full_name}'s turn"
+    expect(game.reload.users).to include user
+  end
+
+  # test for showing that a player's hand is shown to him at all times during the round
+  it 'shows a player\'s hand' do
+    game = create(:game, player_count: 2)
+    user1 = sign_in_and_join_game('Hunter')
+    user2 = sign_in_and_join_game('Jacob')
+    page.driver.refresh
+    # expect to see the player's hand
+    expect(page).to have_selector("img[src='#{game.reload.go_fish.current_player.hand.first.img_href}']")
+  end
+
   it 'starts a game when 3 players join' do
     user1 = sign_in_user('Caleb')
     create_game(3)
@@ -53,7 +69,7 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(page).to have_content 'Waiting for 1 player to join'
   end
 
-  it 'save game state' do
+  it 'saves game state' do
     game = create(:game, player_count: 2)
     session1 = Capybara::Session.new(:rack_test, Rails.application)
     session2 = Capybara::Session.new(:rack_test, Rails.application)
@@ -73,11 +89,5 @@ RSpec.describe 'Games', type: :system, js: true do
     session1.driver.refresh
     expect(session1).to have_content 'Its your turn'
     expect(session2).to have_content "Its Player 1 User's turn"
-  end
-
-  def manual_sign_in(session, user)
-    session.fill_in 'Email', with: user.email
-    session.fill_in 'Password', with: user.password
-    session.click_on 'Log in'
   end
 end

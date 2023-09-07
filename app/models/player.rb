@@ -7,7 +7,7 @@ class Player
 
   attr_reader :name, :hand, :books, :user_id
 
-  def initialize(user_id: -1, name: user.nil? ? 'Anonymous' : user.first_name, hand: [])
+  def initialize(user_id: -1, hand: [])
     @user_id = user_id
     @name = name
     @hand = hand

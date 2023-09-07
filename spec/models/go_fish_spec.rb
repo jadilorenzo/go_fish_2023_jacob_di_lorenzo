@@ -37,7 +37,7 @@ RSpec.describe 'GoFish' do
 
   context '#start' do
     it 'shuffles the deck and deals the cards' do
-      go_fish.start
+      go_fish.start!
       expect(go_fish.deck.shuffled?).to be_truthy
       expect(go_fish.dealt?).to be_truthy
     end
@@ -56,7 +56,7 @@ RSpec.describe 'GoFish' do
         should return the second player after the first turn,
         and should go back to the first player after the second turn
     ' do
-      go_fish.start
+      go_fish.start!
       expect(go_fish.current_player).to eq player1
       go_fish.take_turn(rank: player1.hand.first.rank, player: player2)
       expect(go_fish.current_player).to eq player2
