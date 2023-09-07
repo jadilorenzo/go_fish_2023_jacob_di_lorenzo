@@ -57,6 +57,15 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(page).to have_selector("img[class='playing-card']")
   end
 
+  it 'shows a list of players' do
+    game = create(:game, player_count: 2)
+    user1 = sign_in_and_join_game('Hunter')
+    user2 = sign_in_and_join_game('Jacob')
+    sleep 0.1
+    expect(page).to have_content('Jacob')
+    expect(page).to have_content('Hunter')
+  end
+
   it 'starts a game when 3 players join' do
     user1 = sign_in_user('Caleb')
     create_game(3)

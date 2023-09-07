@@ -1,7 +1,15 @@
-- if game.current_players_turn?(current_user)
-  p Its your turn
-  = button_to 'Play', play_round_game_path(game), method: :patch, class: 'btn-primary'
-- else
-  p = "Its #{game.current_player.full_name}'s turn"
+.app__inner-content
+  .three-fifths-width
+    .card-padded
+      h2 Players
+      = render 'players', players: game.go_fish.players
+      - if game.current_players_turn?(current_user)
+        p Its your turn
+        = button_to 'Play', play_round_game_path(game), method: :patch, class: 'btn-primary'
+      - else
+        p = "Its #{game.current_player.full_name}'s turn"
+  .two-fifths-width
+    .card-padded
+      h2 Game Results
 
 = render 'hand', hand: game.player_for_user(current_user).hand

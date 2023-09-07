@@ -1,2 +1,4 @@
-= render 'game', user: current_user, game: @game
-
+- if @game.pending?
+  = render 'pending_game', game: @game
+- elsif @game.started?
+  = render 'active_game', game: @game
