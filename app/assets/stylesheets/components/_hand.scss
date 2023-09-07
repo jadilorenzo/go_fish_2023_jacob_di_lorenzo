@@ -1,0 +1,37 @@
+.playing-card {
+  height: calc(34 * var(--op-size-unit));
+  z-index: 0;
+}
+
+.hand {
+  display: flex;
+
+  .playing-card {
+    margin-right: calc(-18 * var(--op-size-unit));
+
+    &:hover {
+      position: relative;
+      bottom: var(--op-space-small);
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  &.hand--small {
+    .playing-card {
+      margin-right: -2rem;
+
+      &:hover {
+        position: relative;
+        bottom: 0;
+      }
+    }
+  }
+}
+
+.books {
+  display: flex;
+  gap: var(--op-space-x-small);
+}

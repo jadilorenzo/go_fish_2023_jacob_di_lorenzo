@@ -1,0 +1,19 @@
+.app__content {
+  margin-top: var(--op-space-medium);
+
+  .app__inner-content {
+    display: flex;
+    gap: var(--op-space-small);
+    min-height: -webkit-fill-available;
+    height: 100%;
+  }
+}
+
+.app__footer {
+  background-color: var(--op-color-neutral-plus-seven);
+  border-top: var(--op-color-neutral-plus-four) var(--op-border-width) solid;
+  border-left: var(--op-color-neutral-plus-four) var(--op-border-width) solid;
+  padding: var(--op-space-medium);
+  overflow: scroll;
+  display: flex;
+}
