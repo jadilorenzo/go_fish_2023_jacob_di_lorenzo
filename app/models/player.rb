@@ -7,7 +7,7 @@ class Player
 
   attr_reader :name, :hand, :books, :user_id
 
-  def initialize(user_id: -1, hand: [])
+  def initialize(user_id: nil, name: user_name, hand: [])
     @user_id = user_id
     @name = name
     @hand = hand
@@ -51,6 +51,12 @@ class Player
   end
 
   private
+
+  def user_name
+    return 'Anonymous' if user.nil?
+
+    user.full_name
+  end
 
   def cards_of_rank(rank)
     hand.filter { |card| card.rank == rank }
