@@ -6,7 +6,8 @@
 .hand {
   display: flex;
 
-  .playing-card {
+  .hand__card-group {
+    display: flex;
     margin-right: calc(-18 * var(--op-size-unit));
 
     &:hover {
@@ -14,8 +15,12 @@
       bottom: var(--op-space-small);
     }
 
-    &:last-child {
-      margin-right: 0;
+    .playing-card {
+      margin-right: calc(-18 * var(--op-size-unit));
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 

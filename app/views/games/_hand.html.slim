@@ -1,4 +1,6 @@
 - content_for :footer do
   .hand
-    - hand.each do |card|
-      = image_tag(card.img_href, class: 'playing-card')
+    - hand.group_by(&:rank).each do |rank, cards|
+      .hand__card-group
+        - cards.each do |card|
+          = image_tag(card.img_href, class: 'playing-card')
