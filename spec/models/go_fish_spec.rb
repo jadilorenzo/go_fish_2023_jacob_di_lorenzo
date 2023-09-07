@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'GoFish' do
   let(:player1) { Player.new(name: 'Muffin') }
   let(:player2) { Player.new(name: 'Potato') }
-  let(:go_fish) { GoFish.new(players: [player1, player2]) }
+  let(:go_fish) { GoFish.new(players: [player1, player2], should_shuffle_player_order: false) }
   let(:card_deck) { Deck.new }
   let(:players) { go_fish.players }
 

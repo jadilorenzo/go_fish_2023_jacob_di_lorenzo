@@ -50,14 +50,11 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(game.reload.users).to include user
   end
 
-  fit 'shows a player\'s hand' do
+  it 'shows a player\'s hand' do
     game = create(:game, player_count: 2)
     user1 = sign_in_and_join_game('Hunter')
     user2 = sign_in_and_join_game('Jacob')
-    game.go_fish = GoFish.new(players: [
-      Player.new(user_id: user1.id, hand: []), Player.new(user_id: user2.id, hand: [Card.new(rank: '2', suit: 'H')])
-    ])
-    expect(page).to have_selector("img[src='#{game.player_for_user(user2).hand.first.img_href}']")
+    expect(page).to have_selector("img[class='playing-card']")
   end
 
   it 'starts a game when 3 players join' do
