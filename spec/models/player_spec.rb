@@ -90,4 +90,17 @@ RSpec.describe 'Player' do
       expect(player.rank_in_hand?(card2.rank)).to be_falsey
     end
   end
+
+  context '#==' do
+    it 'returns true for equal players' do
+      expect(
+        Player.new(name: 'billy', hand: [Card.new(rank: 'A', suit: 'S')])
+      ).to eq(
+        Player.new(name: 'billy', hand: [Card.new(rank: 'A', suit: 'S')])
+      )
+    end
+    it 'returns false for different players' do
+      expect(player).not_to eq Player.new name: 'billy'
+    end
+  end
 end

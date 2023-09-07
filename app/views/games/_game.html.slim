@@ -1,8 +1,4 @@
 - if game.pending?
-  p = "Waiting for #{pluralize(game.remaining_players, 'player')} to join"
-- else
-  - if game.current_players_turn?(current_user)
-    p Its your turn
-    = button_to 'Play', play_round_game_path(game), method: :patch, class: 'btn-primary'
-  - else
-    p = "Its #{game.current_player.full_name}'s turn"
+  = render 'pending_game', game: game
+- elsif game.started?
+  = render 'active_game', game: game

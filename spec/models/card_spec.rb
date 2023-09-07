@@ -39,7 +39,7 @@ RSpec.describe 'Card' do
 
   context '#img_href' do
     it 'returns an image href' do
-      expect(ace_of_spades.img_href).to eq '/assets/images/cards/ace_of_spades.svg'
+      expect(ace_of_spades.img_href).to eq '/cards/ace_of_spades.svg'
     end
   end
 

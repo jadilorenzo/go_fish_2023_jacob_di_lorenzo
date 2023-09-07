@@ -36,7 +36,7 @@ class Card
   end
 
   def img_href
-    "/assets/images/cards/#{RANK_NAMES[RANKS.index(rank)]}_of_#{SUIT_NAMES[SUITS.index(suit)]}.svg".downcase
+    "/cards/#{RANK_NAMES[RANKS.index(rank)]}_of_#{SUIT_NAMES[SUITS.index(suit)]}.svg".downcase
   end
 
   def as_json

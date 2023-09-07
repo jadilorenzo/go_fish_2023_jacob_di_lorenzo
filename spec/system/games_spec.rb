@@ -50,14 +50,14 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(game.reload.users).to include user
   end
 
-  # test for showing that a player's hand is shown to him at all times during the round
-  it 'shows a player\'s hand' do
+  fit 'shows a player\'s hand' do
     game = create(:game, player_count: 2)
     user1 = sign_in_and_join_game('Hunter')
     user2 = sign_in_and_join_game('Jacob')
-    page.driver.refresh
-    # expect to see the player's hand
-    expect(page).to have_selector("img[src='#{game.reload.go_fish.current_player.hand.first.img_href}']")
+    game.go_fish = GoFish.new(players: [
+      Player.new(user_id: user1.id, hand: []), Player.new(user_id: user2.id, hand: [Card.new(rank: '2', suit: 'H')])
+    ])
+    expect(page).to have_selector("img[src='#{game.player_for_user(user2).hand.first.img_href}']")
   end
 
   it 'starts a game when 3 players join' do

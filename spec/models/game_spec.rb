@@ -23,6 +23,19 @@ RSpec.describe Game, type: :model do
     end
   end
 
+  describe '#player_for_user' do
+    it 'returns a player for a user' do
+      user1 = create(:user)
+      user2 = create(:user)
+      player1 = Player.new(user_id: user1.id)
+      player2 = Player.new(user_id: user2.id)
+      go_fish = GoFish.new(players: [player1, player2])
+      game = create(:game, users: [user1, user2])
+      game.start!
+      expect(game.player_for_user(user1)).to eq game.reload.go_fish.players[0]
+    end
+  end
+
   describe '#go_fish' do
     it 'saves a GoFish game to JSON' do
       user1 = create(:user)

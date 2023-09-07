@@ -16,6 +16,7 @@ RSpec.describe 'GoFish' do
       expect(go_fish.deck).to_not be_nil
       expect(go_fish.winner).to be_nil
       expect(go_fish.dealt?).to be_falsey
+      expect(go_fish.shuffled_player_order?).to be_falsey
       expect(go_fish.turn).to eq 0
     end
 

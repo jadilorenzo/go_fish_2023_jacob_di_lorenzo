@@ -5,9 +5,9 @@ class Player
   class TakeReceivedNothing < StandardError; end
   class InvalidRank < StandardError; end
 
-  attr_reader :name, :hand, :books, :user_id
+  attr_reader :hand, :books, :user_id
 
-  def initialize(user_id: nil, name: user_name, hand: [])
+  def initialize(user_id: nil, name: nil, hand: [])
     @user_id = user_id
     @name = name
     @hand = hand
@@ -18,6 +18,12 @@ class Player
     return if user_id.nil?
 
     @user ||= User.find user_id
+  end
+
+  def name
+    return @name unless @name.nil?
+
+    user.full_name if user.present?
   end
 
   def take(*new_cards)
@@ -50,13 +56,15 @@ class Player
     hand.any? { |card| card.rank == rank }
   end
 
-  private
-
-  def user_name
-    return 'Anonymous' if user.nil?
-
-    user.full_name
+  def ==(other)
+    other.is_a?(self.class) &&
+      other.user_id == user_id &&
+      other.hand == hand &&
+      other.books == books &&
+      other.name == name
   end
+
+  private
 
   def cards_of_rank(rank)
     hand.filter { |card| card.rank == rank }

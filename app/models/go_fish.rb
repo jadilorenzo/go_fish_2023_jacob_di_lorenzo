@@ -8,14 +8,14 @@ class GoFish
     5 => 5
   }.freeze
 
-  attr_reader :players, :deck, :cards_in_play, :winner, :turn, :dealt
+  attr_reader :players, :deck, :cards_in_play, :winner, :turn, :dealt, :should_shuffle_player_order
 
   class TooManyPlayers < StandardError; end
   class InvalidRank < StandardError; end
   class PlayerDoesNotHaveRequestedRank < StandardError; end
   class PlayerAskedForHimself < StandardError; end
 
-  def initialize(players: [Player.new], deck: Deck.new, turn: 0)
+  def initialize(players: [Player.new], deck: Deck.new, turn: 0, should_shuffle_player_order: true)
     raise TooManyPlayers if players.length > 5
 
     @deck = deck
@@ -24,13 +24,20 @@ class GoFish
     @pending = true
     @winner = nil
     @turn = turn
+    @should_shuffle_player_order = should_shuffle_player_order
+    @shuffled_player_order = false
   end
 
   def dealt?
     dealt
   end
 
+  def shuffled_player_order?
+    @shuffled_player_order
+  end
+
   def start!
+    shuffle_player_order
     deck.shuffle!
     deal!
   end
@@ -42,6 +49,10 @@ class GoFish
         player.take deck.draw
       end
     end
+  end
+
+  def shuffle_player_order
+    @players.shuffle! if should_shuffle_player_order
   end
 
   def play_round!
