@@ -27,16 +27,20 @@ class Card
     15
   end
 
+  def rank_name(rank = self.rank)
+    RANK_NAMES[RANKS.index(rank)]
+  end
+
   def ==(other)
     other.is_a?(Card) && other.rank == rank && other.suit == suit
   end
 
   def to_s
-    "#{RANK_NAMES[RANKS.index(rank)]} of #{SUIT_NAMES[SUITS.index(suit)]}"
+    "#{rank_name(rank)} of #{SUIT_NAMES[SUITS.index(suit)]}"
   end
 
   def img_href
-    "/cards/#{RANK_NAMES[RANKS.index(rank)]}_of_#{SUIT_NAMES[SUITS.index(suit)]}.svg".downcase
+    "/cards/#{rank_name(rank)}_of_#{SUIT_NAMES[SUITS.index(suit)]}.svg".downcase
   end
 
   def as_json

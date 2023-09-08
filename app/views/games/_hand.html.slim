@@ -10,7 +10,7 @@
             - if your_turn
               .hand__menu
                 .card-padded
-                  h4 Pick a player to ask for a #{card.rank}
+                  h4 Pick a player to ask for #{card.rank_name}s
                   - opponents.each do |opponent|
                     button.btn.full-width Ask #{opponent.name}
             = label_tag "rank_#{rank}" do
