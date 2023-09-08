@@ -3,9 +3,12 @@
     label.hand__label Pick a rank to ask for:
   = form_tag
     .hand
-        - hand.group_by(&:rank).each do |rank, cards|
-          .hand__card-group
-            - cards.each do |card|
-              = radio_button_tag 'selected_rank', rank, false, id: "rank_#{rank}", class: 'sr-only'
-              = label_tag "rank_#{rank}" do
-                = image_tag(card.img_href, class: 'playing-card')
+      - hand.group_by(&:rank).each do |rank, cards|
+        .hand__card-group
+          - cards.each do |card|
+            = radio_button_tag 'selected_rank', rank, false, id: "rank_#{rank}", class: 'sr-only'
+            .hand__menu
+              .card-padded
+                h4 Menu
+            = label_tag "rank_#{rank}" do
+              = image_tag(card.img_href, class: 'playing-card')

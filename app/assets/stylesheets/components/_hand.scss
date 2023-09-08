@@ -7,6 +7,15 @@
   padding-bottom: var(--op-space-small);
 }
 
+.hand__menu {
+  width: 0;
+  display: none;
+
+  .card-padded {
+    width: max-content;
+    box-shadow: var(--op-shadow-medium);
+  }
+}
 
 .hand {
   display: flex;
@@ -45,7 +54,6 @@
 }
 
 .hand__card-group input[type="radio"]:checked+label {
-  box-shadow: var(--op-shadow-large);
   position: relative;
   bottom: var(--op-space-small);
 
@@ -54,6 +62,13 @@
     position: relative;
     bottom: 0;
   }
+}
+
+.hand__card-group input[type="radio"]:checked+.hand__menu {
+  display: block;
+  z-index: 100;
+  position: fixed;
+  bottom: 30rem;
 }
 
 .books {
