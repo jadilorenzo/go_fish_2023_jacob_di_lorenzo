@@ -63,7 +63,8 @@ class Game < ApplicationRecord
     player_count - users.length
   end
 
-  def play_round!
+  def play_round!(rank:, user_id:)
+    puts rank, user_id
     go_fish.play_round!
     save!
   end

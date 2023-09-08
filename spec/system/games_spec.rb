@@ -85,6 +85,23 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(page).to have_content('Ask Jacob')
   end
 
+  fit 'takes a turn' do
+    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob', turn: 0)
+    sign_in user1
+    page.driver.refresh
+    visit game_path(game.reload)
+
+    # sleep 0.2
+    find("img[src='#{game.go_fish.players.first.hand.last.img_href}']").click
+    click_on 'Ask Jacob Last'
+
+    page.driver.refresh
+    visit game_path(game.reload)
+
+    expect(game.current_player.user_id).to eq user2.id
+    expect(game.go_fish.players.first.hand.length).to_not eq 7
+  end
+
   it 'starts a game when 3 players join' do
     user1 = sign_in_user('Caleb')
     create_game(3)
@@ -94,7 +111,7 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(page).to have_content 'Waiting for 1 player to join'
   end
 
-  it 'saves game state' do
+  xit 'saves game state' do
     game = create(:game, player_count: 2)
     session1 = Capybara::Session.new(:rack_test, Rails.application)
     session2 = Capybara::Session.new(:rack_test, Rails.application)

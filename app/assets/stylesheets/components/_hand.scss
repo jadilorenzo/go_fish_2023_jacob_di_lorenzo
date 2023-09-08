@@ -1,11 +1,7 @@
-.playing-card {
-  height: calc(34 * var(--op-size-unit));
-  z-index: 0;
-}
-
 .hand__label {
   padding-bottom: var(--op-space-small);
 }
+
 
 .hand__menu {
   width: 0;
@@ -21,56 +17,57 @@
 .hand {
   display: flex;
 
-
-  .hand__card-group {
-    display: flex;
-    margin-right: calc(-18 * var(--op-size-unit));
-
-    &:hover {
-      position: relative;
-      bottom: var(--op-space-small);
-    }
-
-    .playing-card,
-    label {
-      margin-right: calc(-18 * var(--op-size-unit));
-      z-index: 1;
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
+  * {
+    z-index: 1;
   }
 
-  &.hand--small {
+  .playing-card__label {
+    margin-right: calc(-8 * var(--op-size-unit));
+
     .playing-card {
-      margin-right: -2rem;
+      width: calc(28 * var(--op-size-unit));
 
       &:hover {
         position: relative;
-        bottom: 0;
+        bottom: var(--op-space-small);
       }
     }
   }
+
+  // &.hand--small {
+  //   .playing-card {
+  //     margin-right: -2rem;
+
+  //     &:hover {
+  //       position: relative;
+  //       bottom: 0;
+  //     }
+  //   }
+  // }
 }
 
-.hand__card-group input[type="radio"]:checked+label {
-  box-shadow: var(--op-shadow-large);
-  position: relative;
-  bottom: var(--op-space-small);
-
-  &:hover,
-  &>*:hover {
+input[type="radio"]:checked {
+  &~label .playing-card {
+    box-shadow: var(--op-shadow-large);
     position: relative;
-    bottom: 0;
+
+    bottom: var(--op-space-small);
+
+    // &:hover {
+    //   bottom: 0;
+    // }
   }
 }
 
-.hand__card-group input[type="radio"]:checked+.hand__menu {
+input[type="radio"]:checked~.hand__menu {
   display: block;
-  z-index: 100;
   position: fixed;
   bottom: 20rem;
+}
+
+
+.hand__card-group input[type="radio"]:checked+label .btn {
+  background: blue;
 }
 
 .books {

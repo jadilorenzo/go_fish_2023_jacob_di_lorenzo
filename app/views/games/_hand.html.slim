@@ -7,11 +7,15 @@
         .hand__card-group
           - cards.each do |card|
             = radio_button_tag 'selected_rank', rank, false, id: "rank_#{rank}", class: 'sr-only'
+            = label_tag "rank_#{rank}", class: 'playing-card__label' do
+              = image_tag(card.img_href, class: 'playing-card')
             - if your_turn
               .hand__menu
                 .card-padded
                   h4 Pick a player to ask for #{card.rank_name}s
                   - opponents.each do |opponent|
-                    button.btn.full-width Ask #{opponent.name}
-            = label_tag "rank_#{rank}" do
-              = image_tag(card.img_href, class: 'playing-card')
+                    = label_tag "player_#{opponent.user_id}" do
+                      = radio_button_tag 'selected_player', opponent.user_id, false, id: "player_#{opponent.user_id}"
+                      | Ask #{opponent.name}
+                  .card__footer
+                    button.btn-primary.full-width Ask
