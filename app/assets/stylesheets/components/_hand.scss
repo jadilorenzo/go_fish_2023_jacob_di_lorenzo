@@ -13,7 +13,8 @@
 
   .card-padded {
     width: max-content;
-    box-shadow: var(--op-shadow-medium);
+    border: var(--op-border-all);
+    box-shadow: var(--op-shadow-small);
   }
 }
 
@@ -54,6 +55,7 @@
 }
 
 .hand__card-group input[type="radio"]:checked+label {
+  box-shadow: var(--op-shadow-large);
   position: relative;
   bottom: var(--op-space-small);
 

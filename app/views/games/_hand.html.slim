@@ -9,11 +9,8 @@
             = radio_button_tag 'selected_rank', rank, false, id: "rank_#{rank}", class: 'sr-only'
             .hand__menu
               .card-padded
-                .card__header
-                  h4 Pick a player to ask
-                .card__body
-                  - opponents.each do |opponent|
-                    button.btn Ask #{opponent.name}
-
+                h4 Pick a player to ask for a #{card.rank}
+                - opponents.each do |opponent|
+                  button.btn.full-width Ask #{opponent.name}
             = label_tag "rank_#{rank}" do
               = image_tag(card.img_href, class: 'playing-card')
