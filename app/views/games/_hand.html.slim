@@ -1,16 +1,17 @@
 - content_for :footer do
   - if your_turn
     label.hand__label Pick a rank to ask for:
-  = form_tag
+  = form_tag play_round_game_path(@game), method: :patch do
     .hand
       - hand.group_by(&:rank).each do |rank, cards|
         .hand__card-group
           - cards.each do |card|
             = radio_button_tag 'selected_rank', rank, false, id: "rank_#{rank}", class: 'sr-only'
-            .hand__menu
-              .card-padded
-                h4 Pick a player to ask for a #{card.rank}
-                - opponents.each do |opponent|
-                  button.btn.full-width Ask #{opponent.name}
+            - if your_turn
+              .hand__menu
+                .card-padded
+                  h4 Pick a player to ask for a #{card.rank}
+                  - opponents.each do |opponent|
+                    button.btn.full-width Ask #{opponent.name}
             = label_tag "rank_#{rank}" do
               = image_tag(card.img_href, class: 'playing-card')

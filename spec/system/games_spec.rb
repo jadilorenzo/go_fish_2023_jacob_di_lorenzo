@@ -30,12 +30,11 @@ RSpec.describe 'Games', type: :system, js: true do
     click_button 'Create'
   end
 
-  def setup_two_player_game(player1_name, player2_name)
+  def setup_two_player_game(player1_name, player2_name, turn)
     game = create(:game, player_count: 2)
     user1 = sign_in_and_join_game(player1_name)
     sleep 0.1
     user2 = sign_in_and_join_game(player2_name)
-
     [game, user1, user2]
   end
 
@@ -76,14 +75,14 @@ RSpec.describe 'Games', type: :system, js: true do
   end
 
   it 'shows a list of players to ask' do
-    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob')
+    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob', turn: 1)
 
+    sign_in user1
     page.driver.refresh
-    visit game_path(game)
-    game.reload
+    visit game_path(game.reload)
 
-    find("img[src='#{game.go_fish.players.last.hand.last.img_href}']").click
-    expect(page).to have_content('Ask Caleb')
+    find("img[src='#{game.go_fish.players.first.hand.last.img_href}']").click
+    expect(page).to have_content('Ask Jacob')
   end
 
   it 'starts a game when 3 players join' do
