@@ -3,8 +3,14 @@
   z-index: 0;
 }
 
+.hand__label {
+  padding-bottom: var(--op-space-small);
+}
+
+
 .hand {
   display: flex;
+
 
   .hand__card-group {
     display: flex;
@@ -15,8 +21,10 @@
       bottom: var(--op-space-small);
     }
 
-    .playing-card {
+    .playing-card,
+    label {
       margin-right: calc(-18 * var(--op-size-unit));
+      z-index: 1;
 
       &:last-child {
         margin-right: 0;
@@ -33,6 +41,18 @@
         bottom: 0;
       }
     }
+  }
+}
+
+.hand__card-group input[type="radio"]:checked+label {
+  box-shadow: var(--op-shadow-large);
+  position: relative;
+  bottom: var(--op-space-small);
+
+  &:hover,
+  &>*:hover {
+    position: relative;
+    bottom: 0;
   }
 }
 

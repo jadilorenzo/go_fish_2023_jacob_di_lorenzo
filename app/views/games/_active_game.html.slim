@@ -10,4 +10,4 @@
     .card-padded
       h2 Game Results
 
-= render 'hand', hand: game.player_for_user(current_user).hand
+= render 'hand', hand: game.player_for_user(current_user).hand, your_turn: game.current_players_turn?(current_user), game: game
