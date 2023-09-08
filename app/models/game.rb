@@ -40,6 +40,12 @@ class Game < ApplicationRecord
     current_player.user
   end
 
+  def opponents(user)
+    return unless started?
+
+    go_fish.players - [player_for_user(user)]
+  end
+
   def current_players_turn?(current_user)
     return false unless started?
 
