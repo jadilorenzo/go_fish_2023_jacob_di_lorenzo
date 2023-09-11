@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GamesController < ApplicationController
+  before_action :check_for_winner, only: %i[play_round show]
+
   def index
     @pending_games = Game.pending
   end
@@ -13,6 +15,11 @@ class GamesController < ApplicationController
     @game = Game.new
 
     render layout: 'modal'
+  end
+
+  def check_for_winner
+    game = Game.find params[:id]
+    redirect_to "#{game_path(game)}/game_over" if game.go_fish.winner?
   end
 
   def create

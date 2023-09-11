@@ -143,6 +143,7 @@ RSpec.describe 'Games', type: :system, js: true do
         pick_player game.opponents(current_user).first
       end
     end
+
     expect(page).to have_content "#{game.go_fish.winner.name} won!"
   end
 
