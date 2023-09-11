@@ -64,8 +64,12 @@ class Game < ApplicationRecord
   end
 
   def play_round!(rank:, user_id:)
-    puts rank, user_id
-    go_fish.play_round!
+    player ||= go_fish.players.find { |player1| player1.user_id == user_id }
+
+    go_fish.take_turn(
+      rank: rank,
+      player: player
+    )
     save!
   end
 end

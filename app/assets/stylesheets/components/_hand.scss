@@ -3,16 +3,16 @@
 }
 
 
-.hand__menu {
-  width: 0;
-  display: none;
+// .hand__menu {
+//   width: 0;
+//   display: none;
 
-  .card-padded {
-    width: max-content;
-    border: var(--op-border-all);
-    box-shadow: var(--op-shadow-small);
-  }
-}
+//   .card-padded {
+//     width: max-content;
+//     border: var(--op-border-all);
+//     box-shadow: var(--op-shadow-small);
+//   }
+// }
 
 .hand {
   display: flex;
@@ -22,7 +22,7 @@
   }
 
   .playing-card__label {
-    margin-right: calc(-8 * var(--op-size-unit));
+    margin-right: calc(-20 * var(--op-size-unit));
 
     .playing-card {
       width: calc(28 * var(--op-size-unit));

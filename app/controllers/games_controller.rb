@@ -28,7 +28,7 @@ class GamesController < ApplicationController
 
   def play_round
     game = Game.find params[:id]
-    game.play_round!(rank: params[:selected_rank], user_id: params[:user_id])
+    game.play_round!(rank: params[:selected_rank], user_id: params[:selected_player].to_i)
     redirect_to game
   end
 
