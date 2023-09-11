@@ -15,20 +15,20 @@ class GoFish
   class PlayerDoesNotHaveRequestedRank < StandardError; end
   class PlayerAskedForHimself < StandardError; end
 
-  def initialize(players: [Player.new], deck: Deck.new, turn: 0, should_shuffle_player_order: true)
+  def initialize(players: [Player.new], deck: Deck.new, turn: 0, should_shuffle_player_order: true, winner: nil)
     raise TooManyPlayers if players.length > 5
 
     @deck = deck
     @players = players
     @dealt = false
-    @pending = true
-    @winner = nil
+    @winner = winner
     @turn = turn
     @should_shuffle_player_order = should_shuffle_player_order
     @shuffled_player_order = false
   end
 
   def winner?
+    check_for_winner
     !winner.nil?
   end
 
@@ -78,7 +78,7 @@ class GoFish
   end
 
   def check_for_winner
-    return unless dealt?
+    return if deck.cards.length != 0
 
     @winner = players.max_by { |player| player.books.length } if players.all? { |player| player.hand.empty? }
   end
@@ -94,7 +94,8 @@ class GoFish
     deck = Deck.new(cards: json['deck']['cards'].map do |card_hash|
       Card.new(**card_hash.symbolize_keys)
     end)
-    new(players: players, deck: deck, turn: json['turn'])
+    winner = Player.from_json(json['winner']) unless winner.nil?
+    new(players: players, deck: deck, turn: json['turn'], winner: winner)
   end
 
   def self.load(json)
@@ -111,7 +112,8 @@ class GoFish
     {
       players: players.map(&:as_json),
       turn: turn,
-      deck: deck.as_json
+      deck: deck.as_json,
+      winner: winner.as_json
     }
   end
 

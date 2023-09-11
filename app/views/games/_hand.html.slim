@@ -14,10 +14,14 @@
     - if your_turn
       .hand__menu
         .card-padded
-          h4 Pick a player
-          - opponents.each do |opponent|
-            = label_tag "player_#{opponent.user_id}" do
-              = radio_button_tag 'selected_player', opponent.user_id, false, id: "player_#{opponent.user_id}"
-              | Ask #{opponent.name}
-          .card__footer
-            button.btn-primary.full-width Ask
+          - if hand_empty
+            h4 Your hand is empty
+            button.btn-primary.full-width Go Fish
+          - else
+            h4 Pick a player
+            - opponents.each do |opponent|
+              = label_tag "player_#{opponent.user_id}" do
+                = radio_button_tag 'selected_player', opponent.user_id, false, id: "player_#{opponent.user_id}"
+                | Ask #{opponent.name}
+            .card__footer
+              button.btn-primary.full-width Ask

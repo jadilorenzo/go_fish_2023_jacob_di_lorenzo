@@ -7,11 +7,11 @@ class Player
 
   attr_reader :hand, :books, :user_id
 
-  def initialize(user_id: nil, name: nil, hand: [])
+  def initialize(user_id: nil, name: nil, hand: [], books: [])
     @user_id = user_id
     @name = name
     @hand = hand
-    @books = []
+    @books = books
   end
 
   def user
@@ -34,13 +34,17 @@ class Player
 
   def self.from_json(json)
     hand = json['hand'].map { |card_hash| Card.new(**card_hash.symbolize_keys) }
-    new(user_id: json['user_id'], hand: hand)
+    books = json['books'].map do |book|
+      book.map { |card_hash| Card.new(**card_hash.symbolize_keys) }
+    end
+    new(user_id: json['user_id'], hand: hand, books: books)
   end
 
   def as_json
     {
       user_id: user_id,
-      hand: hand.map(&:as_json)
+      hand: hand.map(&:as_json),
+      books: books.map { |book| book.map(&:as_json) }
     }
   end
 
@@ -57,7 +61,7 @@ class Player
   end
 
   def grouped_hand
-    hand.group_by(&:rank)
+    hand.group_by(&:rank).sort_by { |_rank, cards| cards.first.value }.to_h
   end
 
   def ==(other)

@@ -30,7 +30,7 @@ RSpec.describe 'Games', type: :system, js: true do
     click_button 'Create'
   end
 
-  def setup_two_player_game(player1_name, player2_name, turn)
+  def setup_two_player_game(player1_name, player2_name)
     game = create(:game, player_count: 2)
     user1 = sign_in_and_join_game(player1_name)
     sleep 0.1
@@ -75,7 +75,7 @@ RSpec.describe 'Games', type: :system, js: true do
   end
 
   it 'shows a list of players to ask' do
-    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob', turn: 1)
+    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob')
 
     sign_in user1
     page.driver.refresh
@@ -87,7 +87,7 @@ RSpec.describe 'Games', type: :system, js: true do
   end
 
   it 'takes a turn' do
-    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob', turn: 0)
+    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob')
     sign_in user1
     page.driver.refresh
     visit game_path(game.reload)
@@ -112,6 +112,38 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(page).to have_content 'Waiting for 2 players to join'
     user2 = sign_in_and_join_game('Jacob')
     expect(page).to have_content 'Waiting for 1 player to join'
+  end
+
+  def pick_last_card(game)
+    grouped_hand = game.go_fish.current_player.grouped_hand
+    last_card = grouped_hand[grouped_hand.keys.last].last
+    find("img[src='#{last_card.img_href}']").click
+  end
+
+  def pick_player(opponent)
+    choose "Ask #{opponent.name}"
+    click_on 'Ask'
+  end
+
+  fit 'plays a game to completion' do
+    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob')
+
+    game.start!
+    page.driver.refresh
+
+    until game.reload.go_fish.winner?
+      page.driver.refresh
+      current_user = User.find(game.reload.go_fish.current_player.user_id)
+      sign_in current_user
+      visit game_path game
+      if game.go_fish.current_player.hand.empty?
+        click_on 'Go Fish'
+      else
+        pick_last_card game
+        pick_player game.opponents(current_user).first
+      end
+    end
+    expect(page).to have_content "#{game.go_fish.winner.name} won!"
   end
 
   xit 'saves game state' do
