@@ -28,6 +28,10 @@ class GoFish
     @shuffled_player_order = false
   end
 
+  def winner?
+    !winner.nil?
+  end
+
   def dealt?
     dealt
   end
@@ -64,13 +68,19 @@ class GoFish
   end
 
   def take_turn(rank:, player: nil)
-    return go_fish_and_increment_turn if player.hand.empty?
+    return go_fish_and_increment_turn if current_player.hand.empty?
     raise InvalidRank unless Card.valid_rank? rank
     raise PlayerDoesNotHaveRequestedRank unless current_player.rank_in_hand? rank
     raise PlayerAskedForHimself if current_player == player
     return go_fish_and_increment_turn_if_neccesary(rank) unless player.rank_in_hand?(rank)
 
     take_rank_from_player(player, rank)
+  end
+
+  def check_for_winner
+    return unless dealt?
+
+    @winner = players.max_by { |player| player.books.length } if players.all? { |player| player.hand.empty? }
   end
 
   def current_player

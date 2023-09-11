@@ -74,13 +74,21 @@ RSpec.describe 'GoFish' do
     end
   end
 
-  xcontext '#check_for_winner' do
+  context '#check_for_winner' do
     it 'should not change the winner if there is no winner' do
       go_fish.check_for_winner
       expect(go_fish.winner).to be_nil
     end
 
-    it 'should change the winner if there is a winner' do
+    it 'should change the winner when there is a winner' do
+      go_fish.start!
+      until go_fish.winner?
+        go_fish.take_turn(rank: go_fish.current_player.hand.sample&.rank,
+                          player: (go_fish.players - [go_fish.current_player]).first)
+        go_fish.check_for_winner
+      end
+      expect(go_fish.players).to include go_fish.winner
+      expect(go_fish.winner.books.length).to be > (go_fish.players - [go_fish.winner]).first.books.length
     end
   end
 
