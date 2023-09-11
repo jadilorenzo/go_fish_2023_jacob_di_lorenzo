@@ -26,9 +26,17 @@ class GamesController < ApplicationController
     end
   end
 
+  def game_over
+    game = Game.find params[:id]
+    game.go_fish.check_for_winner
+    @winner = game.go_fish.winner
+  end
+
   def play_round
     game = Game.find params[:id]
     game.play_round!(rank: params[:selected_rank], user_id: params[:selected_player].to_i)
+    return redirect_to "#{game_path(game)}/game_over" if game.go_fish.winner?
+
     redirect_to game
   end
 
