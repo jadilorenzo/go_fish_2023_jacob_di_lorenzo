@@ -71,10 +71,12 @@ class Player
   end
 
   def check_for_books
-    ranks_in_hand = hand.map(&:rank)
-    book_ranks = ranks_in_hand.select { |rank| ranks_in_hand.count(rank) == 4 }.uniq
-    @books += book_ranks.map { |rank| hand.filter { |card| card.rank == rank } }
-    @hand = @hand.reject { |card| book_ranks.include?(card.rank) }
+    hand_ranks = hand.map(&:rank)
+    unique_book_ranks = hand_ranks.select { |rank| hand_ranks.count(rank) == 4 }.uniq
+
+    @books += unique_book_ranks.map { |rank| hand.filter { |card| card.rank == rank } }
+    @hand = @hand.reject { |card| unique_book_ranks.include?(card.rank) }
+
     @books
   end
 end
