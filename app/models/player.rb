@@ -56,6 +56,10 @@ class Player
     hand.any? { |card| card.rank == rank }
   end
 
+  def grouped_hand
+    hand.group_by(&:rank)
+  end
+
   def ==(other)
     other.is_a?(self.class) &&
       other.user_id == user_id &&

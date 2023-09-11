@@ -24,6 +24,17 @@ RSpec.describe 'Player' do
     expect(player.hand).to eq ['card']
   end
 
+  context '#grouped_hand' do
+    it 'groups cards by rank' do
+      player.take(card1, card2, card3, card4)
+      expect(player.grouped_hand).to eq({
+        'A' => [card1],
+        '2' => [card2, card4],
+        '3' => [card3]
+      })
+    end
+  end
+
   context '#take' do
     it 'adds a card' do
       player.take(card1)

@@ -5,7 +5,7 @@
     label.hand__label Your hand:
   = form_tag play_round_game_path(@game), method: :patch do
     .hand
-      - hand.group_by(&:rank).each do |rank, cards|
+      - grouped_hand.each do |rank, cards|
         .hand__card-group
           - cards.each do |card|
             = radio_button_tag 'selected_rank', rank, false, id: "rank_#{rank}", class: 'sr-only'

@@ -81,7 +81,8 @@ RSpec.describe 'Games', type: :system, js: true do
     page.driver.refresh
     visit game_path(game.reload)
 
-    find("img[src='#{game.go_fish.players.first.hand.last.img_href}']").click
+    last_card = game.go_fish.players.first.grouped_hand[game.go_fish.players.first.grouped_hand.keys.last].last
+    find("img[src='#{last_card.img_href}']").click
     expect(page).to have_content('Ask Jacob')
   end
 
@@ -92,7 +93,8 @@ RSpec.describe 'Games', type: :system, js: true do
     visit game_path(game.reload)
 
     expect(game.current_player.user_id).to eq user1.id
-    find("img[src='#{game.go_fish.players.first.hand.last.img_href}']").click
+    last_card = game.go_fish.players.first.grouped_hand[game.go_fish.players.first.grouped_hand.keys.last].last
+    find("img[src='#{last_card.img_href}']").click
     choose 'Ask Jacob Last'
     click_on 'Ask'
 

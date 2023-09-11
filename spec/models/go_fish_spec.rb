@@ -74,6 +74,16 @@ RSpec.describe 'GoFish' do
     end
   end
 
+  xcontext '#check_for_winner' do
+    it 'should not change the winner if there is no winner' do
+      go_fish.check_for_winner
+      expect(go_fish.winner).to be_nil
+    end
+
+    it 'should change the winner if there is a winner' do
+    end
+  end
+
   context '#take_turn' do
     it 'should not result in a go fish if the player asks for a card from a player that exists' do
       # player 1 hand starts with 2 which player 2 hand also has

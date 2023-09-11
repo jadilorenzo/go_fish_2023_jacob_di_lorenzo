@@ -70,6 +70,7 @@ class Game < ApplicationRecord
       rank: rank,
       player: player
     )
+    # go_fish.check_for_winner
     save!
   end
 end
