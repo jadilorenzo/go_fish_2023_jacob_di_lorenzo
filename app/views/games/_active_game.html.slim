@@ -1,14 +1,16 @@
-.app__inner-content
-  .three-fifths-width
-    .card-padded
-      h2 Players
-      = render 'players', players: game.go_fish.players, current_player: game.current_player, current_user: current_user
-  .two-fifths-width
-    .card-padded
-      h2 Game Results
+= turbo_frame_tag dom_id(game, user.id)
+  .app__inner-content
+    .three-fifths-width
+      .card-padded
+        h2 Players
+        = render 'games/players', players: game.go_fish.players, current_player: game.current_player, current_user: user
+    .two-fifths-width
+      .card-padded
+        h2 Game Results
 
-= render 'hand',
-  grouped_hand: game.player_for_user(current_user).grouped_hand,
-  your_turn: game.current_players_turn?(current_user),
-  opponents: game.opponents(current_user),
-  hand_empty: game.player_for_user(current_user).hand.empty?
+  = render 'games/hand',
+    grouped_hand: game.player_for_user(user).grouped_hand,
+    your_turn: game.current_players_turn?(user),
+    opponents: game.opponents(user),
+    hand_empty: game.player_for_user(user).hand.empty?,
+    game: game

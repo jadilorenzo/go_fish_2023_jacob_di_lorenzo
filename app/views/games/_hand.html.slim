@@ -1,27 +1,26 @@
-- content_for :footer do
+- if your_turn
+  label.hand__label Pick a rank to ask for:
+- else
+  label.hand__label Your hand:
+= form_tag play_round_game_path(game), method: :patch do
+  .hand
+    - grouped_hand.each do |rank, cards|
+      .hand__card-group
+        - cards.each do |card|
+          = radio_button_tag 'selected_rank', rank, false, id: "rank_#{rank}", class: 'sr-only'
+          = label_tag "rank_#{rank}", class: 'playing-card__label' do
+            = image_tag(card.img_href, class: 'playing-card')
   - if your_turn
-    label.hand__label Pick a rank to ask for:
-  - else
-    label.hand__label Your hand:
-  = form_tag play_round_game_path(@game), method: :patch do
-    .hand
-      - grouped_hand.each do |rank, cards|
-        .hand__card-group
-          - cards.each do |card|
-            = radio_button_tag 'selected_rank', rank, false, id: "rank_#{rank}", class: 'sr-only'
-            = label_tag "rank_#{rank}", class: 'playing-card__label' do
-              = image_tag(card.img_href, class: 'playing-card')
-    - if your_turn
-      .hand__menu
-        .card-padded
-          - if hand_empty
-            h4 Your hand is empty
-            button.btn-primary.full-width Go Fish
-          - else
-            h4 Pick a player
-            - opponents.each do |opponent|
-              = label_tag "player_#{opponent.user_id}" do
-                = radio_button_tag 'selected_player', opponent.user_id, false, id: "player_#{opponent.user_id}"
-                | Ask #{opponent.name}
-            .card__footer
-              button.btn-primary.full-width Ask
+    .hand__menu
+      .card-padded
+        - if hand_empty
+          h4 Your hand is empty
+          button.btn-primary.full-width Go Fish
+        - else
+          h4 Pick a player
+          - opponents.each do |opponent|
+            = label_tag "player_#{opponent.user_id}" do
+              = radio_button_tag 'selected_player', opponent.user_id, false, id: "player_#{opponent.user_id}"
+              | Ask #{opponent.name}
+          .card__footer
+            button.btn-primary.full-width Ask

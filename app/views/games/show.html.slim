@@ -1,4 +1,5 @@
+= turbo_stream_from "games:#{@game.id}:users:#{current_user.id}"
 - if @game.pending?
   = render 'pending_game', game: @game
 - elsif @game.started?
-  = render 'active_game', game: @game
+  = render 'active_game', game: @game, user: current_user
