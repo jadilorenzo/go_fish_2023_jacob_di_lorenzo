@@ -55,24 +55,23 @@ class GoFish
     @players.shuffle! if should_shuffle_player_order
   end
 
-  def play_round!
-    @turn += 1
+  def draw_card
+    return if deck.empty?
+
+    card = deck.draw
+    current_player.take card
+    card
   end
 
-  def go_fish
-    current_player.take deck.draw
-  end
-
-  def take_turn(rank:, player:)
+  def take_turn(rank:, player: nil)
+    return go_fish_and_increment_turn if player.hand.empty?
     raise InvalidRank unless Card.valid_rank? rank
     raise PlayerDoesNotHaveRequestedRank unless current_player.rank_in_hand? rank
     raise PlayerAskedForHimself if current_player == player
 
-    recieved_cards = ask_for_rank(player, rank)
-    return give_cards_to_player recieved_cards unless recieved_cards.empty?
+    return go_fish_and_increment_turn_if_neccesary(rank) unless player.rank_in_hand?(rank)
 
-    @turn += 1
-    go_fish
+    take_rank_from_player(player, rank)
   end
 
   def current_player
@@ -109,17 +108,22 @@ class GoFish
 
   private
 
+  def go_fish_and_increment_turn
+    draw_card
+    @turn += 1
+  end
+
+  def go_fish_and_increment_turn_if_neccesary(rank)
+    return if deck.empty?
+
+    @turn += 1 if draw_card.rank != rank
+  end
+
+  def take_rank_from_player(player, rank)
+    current_player.take(*player.give_cards_of_rank(rank))
+  end
+
   def turn_index
     turn % players.length
-  end
-
-  def ask_for_rank(player, rank)
-    player.give_cards_of_rank rank
-  end
-
-  def give_cards_to_player(cards)
-    player = current_player
-    @turn += 1
-    player.take(*cards)
   end
 end

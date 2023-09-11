@@ -85,20 +85,20 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(page).to have_content('Ask Jacob')
   end
 
-  fit 'takes a turn' do
+  it 'takes a turn' do
     game, user1, user2 = setup_two_player_game('Caleb', 'Jacob', turn: 0)
     sign_in user1
     page.driver.refresh
     visit game_path(game.reload)
 
-    # sleep 0.2
+    expect(game.current_player.user_id).to eq user1.id
     find("img[src='#{game.go_fish.players.first.hand.last.img_href}']").click
-    click_on 'Ask Jacob Last'
+    choose 'Ask Jacob Last'
 
+    sign_in user2
     page.driver.refresh
     visit game_path(game.reload)
 
-    expect(game.current_player.user_id).to eq user2.id
     expect(game.go_fish.players.first.hand.length).to_not eq 7
   end
 
