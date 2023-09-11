@@ -68,7 +68,6 @@ class GoFish
     raise InvalidRank unless Card.valid_rank? rank
     raise PlayerDoesNotHaveRequestedRank unless current_player.rank_in_hand? rank
     raise PlayerAskedForHimself if current_player == player
-
     return go_fish_and_increment_turn_if_neccesary(rank) unless player.rank_in_hand?(rank)
 
     take_rank_from_player(player, rank)

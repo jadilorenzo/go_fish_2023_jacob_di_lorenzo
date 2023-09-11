@@ -94,8 +94,9 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(game.current_player.user_id).to eq user1.id
     find("img[src='#{game.go_fish.players.first.hand.last.img_href}']").click
     choose 'Ask Jacob Last'
+    click_on 'Ask'
 
-    sign_in user2
+    sign_in user1
     page.driver.refresh
     visit game_path(game.reload)
 
