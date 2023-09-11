@@ -34,10 +34,12 @@ class Player
 
   def self.from_json(json)
     hand = json['hand'].map { |card_hash| Card.new(**card_hash.symbolize_keys) }
-    books = json['books'].map do |book|
-      book.map { |card_hash| Card.new(**card_hash.symbolize_keys) }
+    unless json['books'].nil?
+      books = json['books'].map do |book|
+        book.map { |card_hash| Card.new(**card_hash.symbolize_keys) }
+      end
     end
-    new(user_id: json['user_id'], hand: hand, books: books)
+    new(user_id: json['user_id'], hand: hand, books: books || [])
   end
 
   def as_json

@@ -125,7 +125,7 @@ RSpec.describe 'Games', type: :system, js: true do
     click_on 'Ask'
   end
 
-  fit 'plays a game to completion' do
+  it 'plays a game to completion' do
     game, user1, user2 = setup_two_player_game('Caleb', 'Jacob')
 
     game.start!
