@@ -8,7 +8,7 @@ class GameUsersController < ApplicationController
     game.users << current_user # creates a new GameUser
 
     game.start!
-    broadcast_game(game)
+    broadcast_game(game) if game.started?
     redirect_to game
   end
 end

@@ -25,3 +25,5 @@ end
 
 # hide the annoying "Capybara starting Puma..." STDOUT message
 Capybara.server = :puma, { Silent: true }
+
+Capybara.default_max_wait_time = 5

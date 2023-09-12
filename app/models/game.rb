@@ -21,15 +21,11 @@ class Game < ApplicationRecord
   end
 
   def started?
-    !go_fish.nil? || started_at.nil?
+    !go_fish.nil? && !started_at.nil?
   end
 
   def pending?
     player_count != users.length
-  end
-
-  def active?
-    player_count == users.length
   end
 
   def current_player

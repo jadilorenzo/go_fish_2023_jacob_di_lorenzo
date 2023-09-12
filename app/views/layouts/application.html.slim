@@ -18,6 +18,3 @@ html data-theme-mode='light'
         = render 'shared/confirm'
         .margin-top-md
           = yield
-      - if content_for?(:footer)
-        .app__footer
-          = yield(:footer)

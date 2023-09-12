@@ -35,7 +35,8 @@ RSpec.describe 'Games', type: :system, js: true do
     user1 = sign_in_and_join_game(player1_name)
     sleep 0.1
     user2 = sign_in_and_join_game(player2_name)
-    [game, user1, user2]
+    page.driver.refresh
+    [game.reload, user1, user2]
   end
 
   it 'requires authentication' do
@@ -88,21 +89,18 @@ RSpec.describe 'Games', type: :system, js: true do
 
   it 'takes a turn' do
     game, user1, user2 = setup_two_player_game('Caleb', 'Jacob')
-    sign_in user1
-    page.driver.refresh
-    visit game_path(game.reload)
 
-    expect(game.current_player.user_id).to eq user1.id
+    sign_in user1
+    visit game_path(game)
+
+    expect(game.reload.current_player.user_id).to eq user1.id
     last_card = game.go_fish.players.first.grouped_hand[game.go_fish.players.first.grouped_hand.keys.last].last
     find("img[src='#{last_card.img_href}']").click
     choose 'Ask Jacob Last'
     click_on 'Ask'
 
-    sign_in user1
-    page.driver.refresh
-    visit game_path(game.reload)
-
-    expect(game.go_fish.players.first.hand.length).to_not eq 7
+    sleep 0.1
+    expect(game.reload.go_fish.players.first.hand.length).to_not eq 7
   end
 
   it 'starts a game when 3 players join' do
@@ -114,43 +112,59 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(page).to have_content 'Waiting for 1 player to join'
   end
 
-  def pick_last_card(game)
-    grouped_hand = game.go_fish.current_player.grouped_hand
+  def pick_last_card(game, session)
+    grouped_hand = game.reload.go_fish.current_player.grouped_hand
     last_card = grouped_hand[grouped_hand.keys.last].last
-    find("img[src='#{last_card.img_href}']").click
+    session.find("img[src='#{last_card.img_href}']").click
   end
 
-  def pick_player(opponent)
-    choose "Ask #{opponent.name}"
-    click_on 'Ask'
+  def pick_player(opponent, session)
+    session.choose "Ask #{opponent.name}"
+    session.click_on 'Ask'
   end
 
   it 'plays a game to completion' do
-    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob')
+    game = create(:game, player_count: 2)
+    session1 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
+    session2 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
 
-    game.start!
-    page.driver.refresh
+    user1, user2 = [session1, session2].map.with_index do |session, index|
+      user = create(:user, first_name: 'Player', last_name: "#{index + 1}")
+      session.visit root_path
+      manual_sign_in(session, user)
+      session.click_on 'Join'
+      user
+    end
 
-    until game.reload.go_fish.winner?
-      page.driver.refresh
+    users_to_sessions = { user1 => session1, user2 => session2 }
+
+    sleep 0.1 until game.reload.started?
+
+    until game.reload.go_fish&.winner?
+      sleep 0.1
       current_user = User.find(game.reload.go_fish.current_player.user_id)
-      sign_in current_user
-      visit game_path game
+      current_session = users_to_sessions[current_user]
+      visit game_path game, session: current_session unless current_session.current_url == game_path(game)
+
+      break if game.reload.go_fish.winner?
+
       if game.go_fish.current_player.hand.empty?
-        click_on 'Go Fish'
+        current_session.click_on 'Go Fish'
       else
-        pick_last_card game
-        pick_player game.opponents(current_user).first
+        pick_last_card(game.reload, current_session)
+        pick_player(game.opponents(current_user).first, current_session)
       end
     end
 
-    expect(page).to have_content "#{game.go_fish.winner.name} won!"
+    # Assert the winner
+    expect(session1).to have_content "#{game.go_fish.winner.name} won!"
+    expect(session2).to have_content "#{game.go_fish.winner.name} won!"
   end
 
   xit 'saves game state' do
     game = create(:game, player_count: 2)
-    session1 = Capybara::Session.new(:rack_test, Rails.application)
-    session2 = Capybara::Session.new(:rack_test, Rails.application)
+    session1 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
+    session2 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
 
     [session1, session2].each_with_index do |session, index|
       user = create(:user, first_name: 'Player', last_name: "#{index + 1}")
@@ -159,12 +173,11 @@ RSpec.describe 'Games', type: :system, js: true do
       manual_sign_in(session, user)
       session.click_on 'Join'
     end
-    session1.driver.refresh
+
+    sleep 0.1
     expect(session1).to have_content '(your turn)'
     session1.click_on 'Play'
-    session2.driver.refresh
     session2.click_on 'Play'
-    session1.driver.refresh
     expect(session1).to have_content '(your turn)'
     expect(session2).to have_content 'Player 1 (their turn)'
   end
