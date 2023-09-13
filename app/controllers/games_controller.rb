@@ -4,8 +4,6 @@ class GamesController < ApplicationController
   include ActionView::RecordIdentifier
   include GameBroadcaster
 
-  before_action :check_for_winner, only: %i[play_round show]
-
   def index
     @pending_games = Game.pending
   end
@@ -18,13 +16,6 @@ class GamesController < ApplicationController
     @game = Game.new
 
     render layout: 'modal'
-  end
-
-  def check_for_winner
-    game = Game.find params[:id]
-    return if game.go_fish.nil?
-
-    redirect_to "#{game_path(game)}/game_over" if game.go_fish.winner?
   end
 
   def create

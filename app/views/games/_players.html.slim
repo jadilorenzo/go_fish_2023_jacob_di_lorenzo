@@ -1,5 +1,8 @@
 .flex.gap-sm.flex-col
   - players.each do |player|
-    .card-padded
+    .card-padded.flex
       = player.name
       = " (#{current_user.id == player.user_id ? 'your' : 'their'} turn)" if current_player == player
+      .flex-grow-1
+      = " #{pluralize(player.hand.size, 'card')}"
+      = " #{pluralize(player.books.size, 'books')}"

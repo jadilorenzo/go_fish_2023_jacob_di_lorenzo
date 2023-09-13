@@ -63,6 +63,7 @@ RSpec.describe 'Games', type: :system, js: true do
     user1 = sign_in_and_join_game('Hunter')
     user2 = sign_in_and_join_game('Jacob')
     expect(page).to have_selector("img[class='playing-card']")
+    expect(page).to have_content('7 cards')
   end
 
   it 'shows a list of players' do
@@ -175,6 +176,7 @@ RSpec.describe 'Games', type: :system, js: true do
     end
 
     sleep 0.1
+    expect(session1).to have_content '(your turn)'
     expect(session1).to have_content '(your turn)'
     session1.click_on 'Play'
     session2.click_on 'Play'
