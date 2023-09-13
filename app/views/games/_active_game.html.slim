@@ -1,15 +1,18 @@
-.app__inner-content
-  .three-fifths-width
-    .card-padded
-      h2 Players
-      = render 'games/players', players: game.go_fish.players, current_player: game.current_player, current_user: user
-  .two-fifths-width
-    .card-padded
-      h2 Game Results
+- if game.go_fish.winner?
+  = render 'games/game_over', winner: game.go_fish.winner
+- else
+  .app__inner-content
+    .three-fifths-width
+      .card-padded
+        h2 Players
+        = render 'games/players', players: game.go_fish.players, current_player: game.current_player, current_user: user
+    .two-fifths-width
+      .card-padded
+        h2 Game Results
 
-= render 'games/hand',
-  grouped_hand: game.player_for_user(user).grouped_hand,
-  your_turn: game.current_players_turn?(user),
-  opponents: game.opponents(user),
-  hand_empty: game.player_for_user(user).hand.empty?,
-  game: game
+  = render 'games/hand',
+    grouped_hand: game.player_for_user(user).grouped_hand,
+    your_turn: game.current_players_turn?(user),
+    opponents: game.opponents(user),
+    hand_empty: game.player_for_user(user).hand.empty?,
+    game: game
