@@ -12,7 +12,7 @@
 
   = render 'games/hand',
     grouped_hand: game.player_for_user(user).grouped_hand,
-    your_turn: game.current_players_turn?(user),
+    your_turn: game.your_turn?(user),
     opponents: game.opponents(user),
     hand_empty: game.player_for_user(user).hand.empty?,
     game: game

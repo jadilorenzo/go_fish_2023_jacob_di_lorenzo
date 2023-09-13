@@ -8,17 +8,13 @@ class Game < ApplicationRecord
 
   scope :pending, -> { where(started_at: nil) }
   scope :in_progress, -> { where.not(started_at: nil).where(finished_at: nil) }
+  scope :started, -> { where.not(started_at: nil).where(finished_at: nil) }
+
+  def self.games_for_user(current_user)
+    joins(:users).where(users: { id: current_user.id })
+  end
 
   serialize :go_fish, GoFish
-
-  def start!(should_shuffle_player_order: !Rails.env.test?)
-    return if pending?
-
-    players = users.map { |user| Player.new(user_id: user.id) }
-    go_fish = GoFish.new players: players, should_shuffle_player_order: should_shuffle_player_order
-    go_fish.start!
-    update(go_fish: go_fish, started_at: Time.zone.now)
-  end
 
   def started?
     !go_fish.nil? && !started_at.nil?
@@ -28,35 +24,19 @@ class Game < ApplicationRecord
     player_count != users.length
   end
 
-  def current_player
-    go_fish.current_player
-  end
-
-  def current_player_user
-    current_player.user
-  end
-
-  def opponents(user)
-    return unless started?
-
-    go_fish.players - [player_for_user(user)]
-  end
-
-  def current_players_turn?(current_user)
+  def your_turn?(current_user)
     return false unless started?
 
     current_user == current_player_user
   end
 
-  def player_for_user(user)
-    return if user.nil?
-    return if go_fish.nil?
+  def start!(should_shuffle_player_order: !Rails.env.test?)
+    return if pending?
 
-    go_fish.players.find { |player| player.user_id == user.id }
-  end
-
-  def remaining_players
-    player_count - users.length
+    players = users.map { |user| Player.new(user_id: user.id) }
+    go_fish = GoFish.new players: players, should_shuffle_player_order: should_shuffle_player_order
+    go_fish.start!
+    update(go_fish: go_fish, started_at: Time.zone.now)
   end
 
   def play_round!(rank:, user_id:)
@@ -69,5 +49,30 @@ class Game < ApplicationRecord
     go_fish.check_for_winner
     update(finished_at: Time.zone.now) if go_fish.winner?
     save!
+  end
+
+  def player_for_user(user)
+    return if user.nil?
+    return if go_fish.nil?
+
+    go_fish.players.find { |player| player.user_id == user.id }
+  end
+
+  def opponents(user)
+    return unless started?
+
+    go_fish.players - [player_for_user(user)]
+  end
+
+  def remaining_players
+    player_count - users.length
+  end
+
+  def current_player
+    go_fish.current_player
+  end
+
+  def current_player_user
+    current_player.user
   end
 end

@@ -18,7 +18,9 @@ RSpec.describe 'Games', type: :system, js: true do
   def sign_in_and_join_game(name)
     user = sign_in_user(name)
     visit root_path
-    click_on 'Join'
+    sleep 0.75
+    page.driver.refresh
+    find('button', text: 'Join').click
     user
   end
 
@@ -160,7 +162,7 @@ RSpec.describe 'Games', type: :system, js: true do
     sleep 0.1 until game.reload.started?
 
     until game.reload.go_fish&.winner?
-      sleep 0.1
+      sleep 0.3
       current_user = User.find(game.reload.go_fish.current_player.user_id)
       current_session = users_to_sessions[current_user]
       visit game_path game, session: current_session unless current_session.current_url == game_path(game)

@@ -8,7 +8,7 @@
     h3 Pending Games
     .flex.flex-col.gap-sm
 
-      - @pending_games.each do |game|
+      - @games_to_join.each do |game|
         .card-padded.flex.items-center.justify-between
           span = "#{game.player_count} Player"
           = button_to 'Join', game_game_users_path(game), class: 'btn'

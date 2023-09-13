@@ -5,8 +5,8 @@ class GamesController < ApplicationController
   include GameBroadcaster
 
   def index
-    @pending_games = Game.pending
-    @your_games = Game.in_progress.filter { |game| game.users.include?(current_user) }
+    @your_games = Game.started.games_for_user(current_user)
+    @games_to_join = Game.pending - @your_games
   end
 
   def show
