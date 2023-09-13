@@ -3,6 +3,16 @@ module GameBroadcaster
 
   private
 
+  def broadcast_games(your_games, games_to_join)
+    User.all.each do |user|
+      Turbo::StreamsChannel.broadcast_update_to(
+        "games:users:#{user.id}",
+        target: dom_id(user, 'games'),
+        partial: 'games/games', locals: { your_games: your_games, games_to_join: games_to_join }
+      )
+    end
+  end
+
   def broadcast_game(game)
     game.users.each do |user|
       Turbo::StreamsChannel.broadcast_update_to(

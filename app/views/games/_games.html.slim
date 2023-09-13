@@ -1,0 +1,17 @@
+.flex.flex-col.gap-sm
+  div
+    h3 Pending Games
+    .flex.flex-col.gap-sm
+      - games_to_join.each do |game|
+        .card-padded.flex.items-center.justify-between
+          span = "#{game.player_count} Player"
+          = button_to 'Join', game_game_users_path(game), class: 'btn', form: { data: { turbo_frame: "_top" } }
+
+
+  div
+    h3 Your Games
+    .flex.flex-col.gap-sm
+      - your_games.each do |game|
+        .card-padded.flex.items-center.justify-between
+          span = "#{game.player_count} Player"
+          = link_to 'View', game_path(game), class: 'btn', target: '_top'

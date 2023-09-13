@@ -1,23 +1,7 @@
 .flex.items-center.justify-between
   h1 Games
-
   = modal_link_to 'Create Game', new_game_path, class: 'btn-primary'
 
-.flex.flex-col.gap-sm
-  div
-    h3 Pending Games
-    .flex.flex-col.gap-sm
-
-      - @games_to_join.each do |game|
-        .card-padded.flex.items-center.justify-between
-          span = "#{game.player_count} Player"
-          = button_to 'Join', game_game_users_path(game), class: 'btn'
-
-  div
-    h3 Your Games
-    .flex.flex-col.gap-sm
-
-      - @your_games.each do |game|
-        .card-padded.flex.items-center.justify-between
-          span = "#{game.player_count} Player"
-          = link_to 'View', game_path(game), class: 'btn'
+= turbo_stream_from "games:users:#{current_user.id}"
+= turbo_frame_tag dom_id(current_user, 'games')
+  = render 'games/games', your_games: @your_games, games_to_join: @games_to_join

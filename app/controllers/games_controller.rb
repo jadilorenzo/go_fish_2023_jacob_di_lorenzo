@@ -24,6 +24,7 @@ class GamesController < ApplicationController
     @game.users << current_user # creates a GameUser record
 
     if @game.save
+      update_games
       redirect_to @game, notice: I18n.t('flash.game_created_successfully')
     else
       render :new, layout: 'modal', status: :unprocessable_entity
@@ -54,6 +55,12 @@ class GamesController < ApplicationController
   end
 
   private
+
+  def update_games
+    @your_games = Game.started.games_for_user(current_user)
+    @games_to_join = Game.pending - @your_games
+    broadcast_games @your_games, @games_to_join
+  end
 
   def game_params
     params.require(:game).permit(:player_count)
