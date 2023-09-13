@@ -66,6 +66,24 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(page).to have_content('7 cards')
   end
 
+  it "won't let you join you've already entered" do
+    game = create(:game, player_count: 2)
+    user1 = sign_in_and_join_game('Hunter')
+    user2 = sign_in_and_join_game('Jacob')
+    page.driver.refresh
+    visit root_path
+    expect(page).to_not have_content 'Join'
+    expect(page).to have_content 'View'
+  end
+
+  it "shows games you're in" do
+    game = create(:game, player_count: 2)
+    user1 = sign_in_and_join_game('Hunter')
+    user2 = sign_in_and_join_game('Jacob')
+    visit root_path
+    expect(page).to have_content 'View'
+  end
+
   it 'shows a list of players' do
     game = create(:game, player_count: 2)
     user1 = sign_in_and_join_game('Hunter')

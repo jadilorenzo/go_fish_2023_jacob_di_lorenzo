@@ -3,10 +3,19 @@
 
   = modal_link_to 'Create Game', new_game_path, class: 'btn-primary'
 
+h3 Pending Games
 .flex.flex-col.gap-sm
-  h2 Pending Games
 
   - @pending_games.each do |game|
     .card-padded.flex.items-center.justify-between
       span = "#{game.player_count} Player"
       = button_to 'Join', game_game_users_path(game), class: 'btn'
+
+
+h3 Your Games
+.flex.flex-col.gap-sm
+
+  - @your_games.each do |game|
+    .card-padded.flex.items-center.justify-between
+      span = "#{game.player_count} Player"
+      = link_to 'View', game_path(game), class: 'btn'

@@ -6,6 +6,7 @@ class GamesController < ApplicationController
 
   def index
     @pending_games = Game.pending
+    @your_games = Game.in_progress.filter { |game| game.users.include?(current_user) }
   end
 
   def show

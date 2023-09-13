@@ -67,6 +67,7 @@ class Game < ApplicationRecord
       player: player
     )
     go_fish.check_for_winner
+    update(finished_at: Time.zone.now) if go_fish.winner?
     save!
   end
 end
