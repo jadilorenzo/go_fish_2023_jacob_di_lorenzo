@@ -83,7 +83,7 @@ class GoFish
   end
 
   def round_result(asker, rank, askee, count)
-    return 'Go Fish!' if askee.nil? || rank.nil?
+    return ['Go Fish!'] if askee.nil? || rank.nil?
     return ["#{asker.name} asked for #{rank}s from #{askee.name}.", 'Go Fish!'] if count == 0
 
     ["#{asker.name} took #{pluralize(count, rank)} from #{askee.name}."]

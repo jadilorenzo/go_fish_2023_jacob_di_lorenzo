@@ -1,4 +1,12 @@
 .game-results {
   max-height: 30rem;
   overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: var(--op-space-2x-small);
+
+  .game-results__round-result {
+    display: flex;
+    flex-direction: column;
+  }
 }

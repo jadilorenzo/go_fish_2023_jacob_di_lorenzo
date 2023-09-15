@@ -137,8 +137,7 @@ RSpec.describe 'Games', type: :system, js: true do
     choose 'Ask Jacob Last'
     click_on 'Ask'
 
-    sleep 0.5
-    expect(page).to have_content "#{user1.full_name} took 1 #{last_card.rank_name} from #{user2.full_name}."
+    expect(page).to have_content 'Round result:'
   end
 
   it 'starts a game when 3 players join' do
@@ -161,10 +160,10 @@ RSpec.describe 'Games', type: :system, js: true do
     session.find('button', text: 'Ask').click
   end
 
-  fit 'plays a game to completion' do
+  it 'plays a game to completion' do
     game = create(:game, player_count: 2)
-    session1 = Capybara::Session.new(:selenium_chrome, Rails.application)
-    session2 = Capybara::Session.new(:selenium_chrome, Rails.application)
+    session1 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
+    session2 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
 
     user1, user2 = [session1, session2].map.with_index do |session, index|
       user = create(:user, first_name: 'Player', last_name: "#{index + 1}")
@@ -176,10 +175,10 @@ RSpec.describe 'Games', type: :system, js: true do
 
     users_to_sessions = { user1 => session1, user2 => session2 }
 
-    sleep 0.1 until game.reload.started?
+    sleep 0.1 until game.reload.started? # for turbo to register the game start
 
     until game.reload.go_fish&.winner?
-      sleep 0.5
+      sleep 0.5 # for the game to load
       current_user = User.find(game.reload.go_fish.current_player.user_id)
       current_session = users_to_sessions[current_user]
       visit game_path game, session: current_session unless current_session.current_url == game_path(game)

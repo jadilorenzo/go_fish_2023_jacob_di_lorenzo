@@ -11,8 +11,9 @@
         h2 Game Results
         .game-results
           - round_results.each do |round_result|
-            = round_result.content
-            <br>
+            .game-results__round-result
+              b Round result:
+              = round_result.content
 
   = render 'games/hand',
     grouped_hand: game.player_for_user(user).grouped_hand,
