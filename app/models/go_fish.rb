@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GoFish
+  include ActionView::Helpers::TextHelper
+
   DEAL_SIZE = {
     2 => 7,
     3 => 5,
@@ -59,22 +61,32 @@ class GoFish
     @players.shuffle! if should_shuffle_player_order
   end
 
-  def draw_card
+  def draw_card(asker = current_player)
     return if deck.empty?
 
     card = deck.draw
-    current_player.take card
+    asker.take card
     card
   end
 
   def take_turn(rank:, player: nil)
-    return go_fish_and_increment_turn if current_player.hand.empty?
+    # will always return round_result
+    asker = current_player
+    askee = player
+    return go_fish_and_increment_turn(asker, askee) if asker.hand.empty?
     raise InvalidRank unless Card.valid_rank? rank
-    raise PlayerDoesNotHaveRequestedRank unless current_player.rank_in_hand? rank
-    raise PlayerAskedForHimself if current_player == player
-    return go_fish_and_increment_turn_if_neccesary(rank) unless player.rank_in_hand?(rank)
+    raise PlayerDoesNotHaveRequestedRank unless asker.rank_in_hand? rank
+    raise PlayerAskedForHimself if asker == askee
+    return go_fish_and_increment_turn_if_neccesary(asker, rank, askee) unless askee.rank_in_hand?(rank)
 
-    take_rank_from_player(player, rank)
+    take_rank_from_player(asker, rank, askee)
+  end
+
+  def round_result(asker, rank, askee, count)
+    return 'Go Fish!' if askee.nil? || rank.nil?
+    return ["#{asker.name} asked for #{rank}s from #{askee.name}.", 'Go Fish!'] if count == 0
+
+    ["#{asker.name} took #{pluralize(count, rank)} from #{askee.name}."]
   end
 
   def check_for_winner
@@ -119,19 +131,23 @@ class GoFish
 
   private
 
-  def go_fish_and_increment_turn
-    draw_card
+  def go_fish_and_increment_turn(asker, askee)
+    card = draw_card(asker)
     @turn += 1
+    round_result(asker, card.rank_name, askee, 0)
   end
 
-  def go_fish_and_increment_turn_if_neccesary(rank)
+  def go_fish_and_increment_turn_if_neccesary(asker, rank, askee)
     return if deck.empty?
 
-    @turn += 1 if draw_card.rank != rank
+    @turn += 1 if draw_card(asker).rank != rank
+    round_result(asker, Card.rank_name(rank), askee, 0)
   end
 
-  def take_rank_from_player(player, rank)
-    current_player.take(*player.give_cards_of_rank(rank))
+  def take_rank_from_player(asker, rank, askee)
+    cards = askee.give_cards_of_rank(rank)
+    asker.take(*cards)
+    round_result(asker, Card.rank_name(rank), askee, cards.length)
   end
 
   def turn_index

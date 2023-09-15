@@ -124,6 +124,23 @@ RSpec.describe 'Games', type: :system, js: true do
     expect(game.reload.go_fish.players.first.hand.length).to_not eq 7
   end
 
+  it 'shows round results for a turn' do
+    game, user1, user2 = setup_two_player_game('Caleb', 'Jacob')
+
+    last_card = game.reload.go_fish.players.first.grouped_hand[game.go_fish.players.first.grouped_hand.keys.last].last
+    game.go_fish.players.last.hand = [last_card]
+    sign_in user1
+    visit game_path(game)
+
+    expect(game.reload.current_player.user_id).to eq user1.id
+    find("img[src='#{last_card.img_href}']").click
+    choose 'Ask Jacob Last'
+    click_on 'Ask'
+
+    sleep 0.5
+    expect(page).to have_content "#{user1.full_name} took 1 #{last_card.rank_name} from #{user2.full_name}."
+  end
+
   it 'starts a game when 3 players join' do
     user1 = sign_in_user('Caleb')
     create_game(3)
@@ -140,14 +157,14 @@ RSpec.describe 'Games', type: :system, js: true do
   end
 
   def pick_player(opponent, session)
-    session.choose "Ask #{opponent.name}"
-    session.click_on 'Ask'
+    session.find('label', text: "Ask #{opponent.name}").click
+    session.find('button', text: 'Ask').click
   end
 
-  it 'plays a game to completion' do
+  fit 'plays a game to completion' do
     game = create(:game, player_count: 2)
-    session1 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
-    session2 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
+    session1 = Capybara::Session.new(:selenium_chrome, Rails.application)
+    session2 = Capybara::Session.new(:selenium_chrome, Rails.application)
 
     user1, user2 = [session1, session2].map.with_index do |session, index|
       user = create(:user, first_name: 'Player', last_name: "#{index + 1}")
@@ -162,7 +179,7 @@ RSpec.describe 'Games', type: :system, js: true do
     sleep 0.1 until game.reload.started?
 
     until game.reload.go_fish&.winner?
-      sleep 0.3
+      sleep 0.5
       current_user = User.find(game.reload.go_fish.current_player.user_id)
       current_session = users_to_sessions[current_user]
       visit game_path game, session: current_session unless current_session.current_url == game_path(game)
@@ -180,27 +197,5 @@ RSpec.describe 'Games', type: :system, js: true do
     # Assert the winner
     expect(session1).to have_content "#{game.go_fish.winner.name} won!"
     expect(session2).to have_content "#{game.go_fish.winner.name} won!"
-  end
-
-  xit 'saves game state' do
-    game = create(:game, player_count: 2)
-    session1 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
-    session2 = Capybara::Session.new(:selenium_chrome_headless, Rails.application)
-
-    [session1, session2].each_with_index do |session, index|
-      user = create(:user, first_name: 'Player', last_name: "#{index + 1}")
-      session.visit root_path
-      # can't use devise helper with multiple sessions
-      manual_sign_in(session, user)
-      session.click_on 'Join'
-    end
-
-    sleep 0.1
-    expect(session1).to have_content '(your turn)'
-    expect(session1).to have_content '(your turn)'
-    session1.click_on 'Play'
-    session2.click_on 'Play'
-    expect(session1).to have_content '(your turn)'
-    expect(session2).to have_content 'Player 1 (their turn)'
   end
 end

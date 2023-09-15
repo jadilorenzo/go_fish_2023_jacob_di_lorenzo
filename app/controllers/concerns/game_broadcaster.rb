@@ -13,12 +13,12 @@ module GameBroadcaster
     end
   end
 
-  def broadcast_game(game)
+  def broadcast_game(game, round_results)
     game.users.each do |user|
       Turbo::StreamsChannel.broadcast_update_to(
         "games:#{game.id}:users:#{user.id}", # matches turbo_stream_from channel
         target: dom_id(game, user.id), # matches turbo_frame id
-        partial: 'games/active_game', locals: { game: game, user: user }
+        partial: 'games/active_game', locals: { game: game, user: user, round_results: round_results }
       )
     end
   end

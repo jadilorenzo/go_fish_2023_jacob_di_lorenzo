@@ -2,13 +2,17 @@
   = render 'games/game_over', winner: game.go_fish.winner
 - else
   .app__inner-content
-    .three-fifths-width
+    .one-half-width.full-width
       .card-padded
         h2 Players
         = render 'games/players', players: game.go_fish.players, current_player: game.current_player, current_user: user
-    .two-fifths-width
+    .one-half-width.full-width
       .card-padded
         h2 Game Results
+        .game-results
+          - round_results.each do |round_result|
+            = round_result.content
+            <br>
 
   = render 'games/hand',
     grouped_hand: game.player_for_user(user).grouped_hand,

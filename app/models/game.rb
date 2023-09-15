@@ -42,13 +42,14 @@ class Game < ApplicationRecord
   def play_round!(rank:, user_id:)
     player ||= go_fish.players.find { |player1| player1.user_id == user_id }
 
-    go_fish.take_turn(
+    results = go_fish.take_turn(
       rank: rank,
       player: player
     )
     go_fish.check_for_winner
     update(finished_at: Time.zone.now) if go_fish.winner?
     save!
+    results
   end
 
   def player_for_user(user)

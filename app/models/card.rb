@@ -27,6 +27,10 @@ class Card
     15
   end
 
+  def self.rank_name(rank = self.rank)
+    RANK_NAMES[RANKS.index(rank)]
+  end
+
   def rank_name(rank = self.rank)
     RANK_NAMES[RANKS.index(rank)]
   end

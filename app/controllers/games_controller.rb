@@ -39,15 +39,16 @@ class GamesController < ApplicationController
 
   def play_round
     game = Game.find params[:id]
-    game.play_round!(rank: params[:selected_rank], user_id: params[:selected_player].to_i)
-
+    results = game.play_round!(rank: params[:selected_rank], user_id: params[:selected_player].to_i)
+    results.each { |result| RoundResult.new(content: result, game: game).save! }
     game.save!
-    broadcast_game(game)
+    round_results = RoundResult.where(game_id: params[:id])
+    broadcast_game(game, round_results)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.update(
           dom_id(game, current_user.id),
-          partial: 'games/active_game', locals: { game: game, user: current_user }
+          partial: 'games/active_game', locals: { game: game, user: current_user, round_results: round_results }
         )
       end
       format.html { redirect_to game }

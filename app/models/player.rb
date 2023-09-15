@@ -5,7 +5,8 @@ class Player
   class TakeReceivedNothing < StandardError; end
   class InvalidRank < StandardError; end
 
-  attr_reader :hand, :books, :user_id
+  attr_reader :books, :user_id
+  attr_accessor :hand
 
   def initialize(user_id: nil, name: nil, hand: [], books: [])
     @user_id = user_id

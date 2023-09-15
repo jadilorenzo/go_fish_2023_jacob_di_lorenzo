@@ -185,5 +185,34 @@ RSpec.describe 'GoFish' do
       go_fish.deal!
       expect(go_fish.winner).to be_nil
     end
+
+    it 'returns round result' do
+      go_fish.deal!
+      expect(go_fish.take_turn(rank: player1.hand.first.rank,
+                               player: player2).first).to include "#{player1.name}"
+      expect(go_fish.take_turn(rank: player1.hand.first.rank,
+                               player: player2).first).to include "#{player2.name}"
+    end
+  end
+
+  context '#round_result' do
+    it 'should return the appropriate message if go fish' do
+      asker = player1
+      rank = 'Ace'
+      askee = player2
+      count = 0
+      result = go_fish.round_result(asker, rank, askee, count)
+      expect(result).to eq ["#{asker.name} asked for #{rank}s from #{askee.name}.", 'Go Fish!']
+    end
+
+    it 'should return the appropriate message if player took a card' do
+      asker = player1
+      rank = 'Ace'
+      askee = player2
+      success = true
+      count = 1
+      result = go_fish.round_result(asker, rank, askee, count)
+      expect(result).to eq ["#{asker.name} took 1 #{rank} from #{askee.name}."]
+    end
   end
 end

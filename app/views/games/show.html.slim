@@ -3,4 +3,4 @@
   - if @game.pending?
     = render 'pending_game', game: @game
   - elsif @game.started?
-    = render 'active_game', game: @game, user: current_user
+    = render 'active_game', game: @game, user: current_user, round_results: RoundResult.where(game_id: @game.id)
