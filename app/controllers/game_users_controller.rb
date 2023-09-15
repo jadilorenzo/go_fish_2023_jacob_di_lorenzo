@@ -8,7 +8,7 @@ class GameUsersController < ApplicationController
     game.users << current_user # creates a new GameUser
 
     game.start!
-    broadcast_game(game, RoundResult.where(game_id: params[:game_id])) if game.started?
+    broadcast_game(game, RoundResult.where(game_id: params[:game_id]).order(created_at: :desc)) if game.started?
     redirect_to game
   end
 end

@@ -16,6 +16,8 @@
 
 .hand {
   display: flex;
+  overflow-x: scroll;
+  padding-top: var(--op-space-small);
 
   * {
     z-index: 1;

@@ -42,7 +42,7 @@ class GamesController < ApplicationController
     results = game.play_round!(rank: params[:selected_rank], user_id: params[:selected_player].to_i)
     results.each { |result| RoundResult.new(content: result, game: game).save! }
     game.save!
-    round_results = RoundResult.where(game_id: params[:id])
+    round_results = RoundResult.where(game_id: params[:id]).order(created_at: :desc)
     broadcast_game(game, round_results)
     respond_to do |format|
       format.turbo_stream do
